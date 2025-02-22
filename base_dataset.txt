@@ -1,0 +1,10 @@
+{
+  "id": "US001",
+  "historia_usuario": "Como usuario, quiero registrarme para comprar productos.",
+  "modelo_dominio": {
+    "entidad": "Usuario",
+    "atributos": ["ID", "nombre", "email", "contraseña"],
+    "plant":
+  },
+  "codigo": "public class Usuario { private Long id; private String nombre; private String email; private String contraseña; }"
+}
