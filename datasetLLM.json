@@ -1,55 +1,552 @@
-{
-    "userStories": [
-      {
-        "userStory": "Como usuario, deseo registrarme para acceder al sistema.",
-        "plantUML": "@startuml\nclass Usuario {\n  -id: Long\n  -nombre: String\n  -correo: String\n  -contraseña: String\n}\n@enduml",
-        "code": "package tienda.discos.model; import java.util.Arrays; import javax.persistence.Column; import javax.persistence.Entity; import javax.persistence.GeneratedValue; import javax.persistence.Id; import javax.persistence.Lob; import javax.persistence.OneToOne; import javax.persistence.Table; import javax.persistence.UniqueConstraint; @Entity @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) }) public class Usuario { private String nombre; private String email; private String pass; private String tel; private String pais; @Lob @Column(name = "avatar") private byte[] avatar; @OneToOne private Carrito carrito; @Id @GeneratedValue private int id; public Usuario() {} public Usuario(String nombre, String email, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.pass = pass; this.tel = tel; this.pais = pais; } public Usuario(String nombre, String email, int id, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.id = id; this.pass = pass; this.tel = tel; this.pais = pais; } public Carrito getCarrito() { return carrito; } public void setCarrito(Carrito carrito) { this.carrito = carrito; } public String getNombre() { return nombre; } public void setNombre(String nombre) { this.nombre = nombre; } public String getEmail() { return email; } public void setEmail(String email) { this.email = email; } public int getId() { return id; } public void setId(int id) { this.id = id; } public String getPass() { return pass; } public void setPass(String pass) { this.pass = pass; } public byte[] getAvatar() { return avatar; } public void setAvatar(byte[] avatar) { this.avatar = avatar; } public String getTel() { return tel; } public void setTel(String tel) { this.tel = tel; } public String getPais() { return pais; } public void setPais(String pais) { this.pais = pais; } @Override public String toString() { return "Usuario [nombre=" + nombre + ", email=" + email + ", pass=" + pass + ", tel=" + tel + ", pais=" + pais + ", avatar=" + Arrays.toString(avatar) + ", carrito=" + carrito + ", id=" + id + "]"; } }"
+[
+  {
+    "project_id": "ECommerceStore01",
+    "project_name": "E-Commerce Disc Store",
+    "stories": [
+        {
+            "story_id": "ST-001",
+            "description": "As a user, I want to see a summary of my order before confirming the purchase.",
+            "acceptance_criteria": [
+                "The summary should display all items in the cart.",
+                "The summary should include the user's address and payment details.",
+                "The user should be able to confirm or cancel the order."
+            ],
+            "related_classes": ["ResumenPedido.java", "ServicioPedidosImpl.java"]
+        },
+        {
+          "story_id": "ST-002",
+          "description": "As a user, I want to view all the discs currently in my shopping cart.",
+          "acceptance_criteria": [
+              "The system should display all items in the cart.",
+              "Each item should show its title, artist, price, and quantity.",
+              "The user should be able to remove items from the cart."
+          ],
+          "related_classes": ["ResumenPedido.java", "ServicioCarritoImpl.java"]
       },
       {
-        "userStory": "Como usuario, deseo iniciar sesión para gestionar mis datos.",
-        "plantUML": "@startuml\nclass Usuario {\n  -id: Long\n  -correo: String\n  -contraseña: String\n}\n@enduml",
-        "code": ["package tienda.discos.model; import java.util.Arrays; import javax.persistence.Column; import javax.persistence.Entity; import javax.persistence.GeneratedValue; import javax.persistence.Id; import javax.persistence.Lob; import javax.persistence.OneToOne; import javax.persistence.Table; import javax.persistence.UniqueConstraint; @Entity @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) }) public class Usuario { private String nombre; private String email; private String pass; private String tel; private String pais; @Lob @Column(name = "avatar") private byte[] avatar; @OneToOne private Carrito carrito; @Id @GeneratedValue private int id; public Usuario() {} public Usuario(String nombre, String email, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.pass = pass; this.tel = tel; this.pais = pais; } public Usuario(String nombre, String email, int id, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.id = id; this.pass = pass; this.tel = tel; this.pais = pais; } public Carrito getCarrito() { return carrito; } public void setCarrito(Carrito carrito) { this.carrito = carrito; } public String getNombre() { return nombre; } public void setNombre(String nombre) { this.nombre = nombre; } public String getEmail() { return email; } public void setEmail(String email) { this.email = email; } public int getId() { return id; } public void setId(int id) { this.id = id; } public String getPass() { return pass; } public void setPass(String pass) { this.pass = pass; } public byte[] getAvatar() { return avatar; } public void setAvatar(byte[] avatar) { this.avatar = avatar; } public String getTel() { return tel; } public void setTel(String tel) { this.tel = tel; } public String getPais() { return pais; } public void setPais(String pais) { this.pais = pais; } @Override public String toString() { return "Usuario [nombre=" + nombre + ", email=" + email + ", pass=" + pass + ", tel=" + tel + ", pais=" + pais + ", avatar=" + Arrays.toString(avatar) + ", carrito=" + carrito + ", id=" + id + "]"; } }"]
+          "story_id": "ST-003",
+          "description": "As a user, I should only have one active order in progress at a time.",
+          "acceptance_criteria": [
+              "If the user has an active order, they cannot create a new one.",
+              "Once the order is completed, the user can create a new one."
+          ],
+          "related_classes": ["ServicioPedidosImpl.java", "ResumenPedido.java", "ServicioUsuariosImpl.java"]
       },
       {
-        "userStory": "Como usuario, deseo crear un producto para venderlo.",
-        "plantUML": "@startuml\nclass Producto {\n  -id: Long\n  -nombre: String\n  -precio: Double\n}\nclass Usuario {\n  -id: Long\n}\nUsuario \"1\" -- \"many\" Producto\n@enduml",
-        "code": ["package tienda.discos.model; import java.util.Arrays; import javax.persistence.Column; import javax.persistence.Entity; import javax.persistence.GeneratedValue; import javax.persistence.Id; import javax.persistence.Lob; import javax.persistence.OneToOne; import javax.persistence.Table; import javax.persistence.UniqueConstraint; @Entity @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) }) public class Usuario { private String nombre; private String email; private String pass; private String tel; private String pais; @Lob @Column(name = "avatar") private byte[] avatar; @OneToOne private Carrito carrito; @Id @GeneratedValue private int id; public Usuario() {} public Usuario(String nombre, String email, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.pass = pass; this.tel = tel; this.pais = pais; } public Usuario(String nombre, String email, int id, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.id = id; this.pass = pass; this.tel = tel; this.pais = pais; } public Carrito getCarrito() { return carrito; } public void setCarrito(Carrito carrito) { this.carrito = carrito; } public String getNombre() { return nombre; } public void setNombre(String nombre) { this.nombre = nombre; } public String getEmail() { return email; } public void setEmail(String email) { this.email = email; } public int getId() { return id; } public void setId(int id) { this.id = id; } public String getPass() { return pass; } public void setPass(String pass) { this.pass = pass; } public byte[] getAvatar() { return avatar; } public void setAvatar(byte[] avatar) { this.avatar = avatar; } public String getTel() { return tel; } public void setTel(String tel) { this.tel = tel; } public String getPais() { return pais; } public void setPais(String pais) { this.pais = pais; } @Override public String toString() { return "Usuario [nombre=" + nombre + ", email=" + email + ", pass=" + pass + ", tel=" + tel + ", pais=" + pais + ", avatar=" + Arrays.toString(avatar) + ", carrito=" + carrito + ", id=" + id + "]"; } }","domain/Producto.java"]
+          "story_id": "ST-004",
+          "description": "As a user, when I complete an order, it should no longer be in progress.",
+          "acceptance_criteria": [
+              "When an order is completed, its status should change to 'completed'.",
+              "The user should receive a confirmation of the completed order.",
+              "The user should be able to place a new order after completion."
+          ],
+          "related_classes": ["ServicioPedidosImpl.java", "ResumenPedido.java"]
       },
       {
-        "userStory": "Como usuario, deseo agregar productos a mi carrito.",
-        "plantUML": "@startuml\nclass Carrito {\n  -id: Long\n}\nclass Producto {\n  -id: Long\n}\nCarrito \"1\" -- \"many\" Producto\n@enduml",
-        "code": ["domain/Carrito.java","domain/Producto.java"]
+          "story_id": "ST-005",
+          "description": "As a user, if I don't have a cart, the system should create one for me.",
+          "acceptance_criteria": [
+              "If a user logs in without an existing cart, a new cart should be automatically created.",
+              "The cart should be stored in the database.",
+              "The user should be able to add items to the newly created cart."
+          ],
+          "related_classes": ["ServicioCarritoImpl.java", "ServicioUsuariosImpl.java"]
       },
       {
-        "userStory": "Como usuario, deseo generar un pedido con mis productos.",
-        "plantUML": "@startuml\nclass Pedido {\n  -id: Long\n  -fecha: Date\n}\nclass Carrito {\n  -id: Long\n}\nPedido \"1\" -- \"1\" Carrito\n@enduml",
-        "code": ["domain/Pedido.java","domain/Carrito.java"]
-      },
-      {
-        "userStory": "Como usuario, deseo procesar el pago de mi pedido.",
-        "plantUML": "@startuml\nclass Pago {\n  -id: Long\n  -monto: Double\n  -fecha: Date\n}\nclass Pedido {\n  -id: Long\n}\nPago \"1\" -- \"1\" Pedido\n@enduml",
-        "code": ["domain/Pago.java","domain/Pedido.java"]
-      },
-      {
-        "userStory": "Como usuario, deseo recibir confirmación de mi compra.",
-        "plantUML": "@startuml\nclass Confirmacion {\n  -id: Long\n  -codigo: String\n}\nclass Pedido {\n  -id: Long\n}\nConfirmacion \"1\" -- \"1\" Pedido\n@enduml",
-        "code": ["domain/Confirmacion.java","domain/Pedido.java"]
-      },
-      {
-        "userStory": "Como usuario, deseo ver el estado de mi envío.",
-        "plantUML": "@startuml\nclass Envio {\n  -id: Long\n  -estado: String\n}\nclass Pedido {\n  -id: Long\n}\nEnvio \"1\" -- \"1\" Pedido\n@enduml",
-        "code": ["domain/Envio.java","domain/Pedido.java"]
-      },
-      {
-        "userStory": "Como usuario, deseo revisar mi historial de pedidos.",
-        "plantUML": "@startuml\nclass Usuario {\n  -id: Long\n}\nclass Pedido {\n  -id: Long\n}\nUsuario \"1\" -- \"many\" Pedido\n@enduml",
-        "code": ["package tienda.discos.model; import java.util.Arrays; import javax.persistence.Column; import javax.persistence.Entity; import javax.persistence.GeneratedValue; import javax.persistence.Id; import javax.persistence.Lob; import javax.persistence.OneToOne; import javax.persistence.Table; import javax.persistence.UniqueConstraint; @Entity @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) }) public class Usuario { private String nombre; private String email; private String pass; private String tel; private String pais; @Lob @Column(name = "avatar") private byte[] avatar; @OneToOne private Carrito carrito; @Id @GeneratedValue private int id; public Usuario() {} public Usuario(String nombre, String email, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.pass = pass; this.tel = tel; this.pais = pais; } public Usuario(String nombre, String email, int id, String pass, String tel, String pais) { super(); this.nombre = nombre; this.email = email; this.id = id; this.pass = pass; this.tel = tel; this.pais = pais; } public Carrito getCarrito() { return carrito; } public void setCarrito(Carrito carrito) { this.carrito = carrito; } public String getNombre() { return nombre; } public void setNombre(String nombre) { this.nombre = nombre; } public String getEmail() { return email; } public void setEmail(String email) { this.email = email; } public int getId() { return id; } public void setId(int id) { this.id = id; } public String getPass() { return pass; } public void setPass(String pass) { this.pass = pass; } public byte[] getAvatar() { return avatar; } public void setAvatar(byte[] avatar) { this.avatar = avatar; } public String getTel() { return tel; } public void setTel(String tel) { this.tel = tel; } public String getPais() { return pais; } public void setPais(String pais) { this.pais = pais; } @Override public String toString() { return "Usuario [nombre=" + nombre + ", email=" + email + ", pass=" + pass + ", tel=" + tel + ", pais=" + pais + ", avatar=" + Arrays.toString(avatar) + ", carrito=" + carrito + ", id=" + id + "]"; } }","domain/Pedido.java"]
-      },
-      {
-        "userStory": "Como administrador, deseo gestionar el inventario de productos.",
-        "plantUML": "@startuml\nclass Inventario {\n  -id: Long\n  -cantidad: int\n}\nclass Producto {\n  -id: Long\n}\nInventario \"1\" -- \"1\" Producto\n@enduml",
-        "code": ["domain/Inventario.java","domain/Producto.java"]
+          "story_id": "ST-006",
+          "description": "As a user, I want to log in and be recognized in the system.",
+          "acceptance_criteria": [
+              "The system should allow users to log in with valid credentials.",
+              "If login is successful, the user should be recognized and granted access to their account.",
+              "If login fails, the system should provide an appropriate error message."
+          ],
+          "related_classes": ["ServicioUsuariosImpl.java"]
       }
+    ],
+    "uml": [
+      {
+        "story_id": "ST-001",
+        "plantuml_code": "@startuml\n\nclass ResumenPedido {\n    - List<Map<String, Object>> Discos\n    - String nombreCompleto\n    - String direccion\n    - String provincia\n    - String titularTarjeta\n    - String numeroTarjera\n    - String tipoTarjeta\n    - String regalo\n    - String observaciones\n}\n\nclass InfoDiscos {\n    - String titulo\n    - String artista\n    - double precio\n    - String genero\n}\n\nclass ServicioPedidosImpl {\n    + crearPedido()\n    + obtenerPedido()\n    + actualizarEstadoPedido()\n}\n\nclass ServicioDiscosJPAImpl {\n    + obtenerDiscos()\n    + buscarPorGenero()\n}\n\nclass ServicioCarritoImpl {\n    + agregarDisco()\n    + eliminarDisco()\n    + obtenerCarrito()\n}\n\nclass ServicioUsuariosImpl {\n    + registrarUsuario()\n    + autenticarUsuario()\n}\n\nclass ServicioGenerosJPAImpl {\n    + obtenerGeneros()\n}\n\nclass ServicioWebCarrito {\n    + obtenerCarrito()\n    + agregarAlCarrito()\n    + eliminarDelCarrito()\n}\n\nResumenPedido \"1\" -- \"1\" ServicioPedidosImpl : gestiona\nInfoDiscos \"1\" -- \"*\" ServicioDiscosJPAImpl : administra\nServicioCarritoImpl \"1\" -- \"*\" ServicioWebCarrito : usa\nServicioUsuariosImpl \"1\" -- \"*\" ResumenPedido : vincula usuario\n\n@enduml"
+      },
+      {
+        "story_id": "ST-002",
+        "plantuml_code": "@startuml\n\nclass Carrito {\n    - List<Disco> discos\n    + agregarDisco()\n    + eliminarDisco()\n    + obtenerContenido()\n}\n\nclass Disco {\n    - String titulo\n    - String artista\n    - double precio\n    - String genero\n}\n\nCarrito \"1\" -- \"*\" Disco : contiene\n\n@enduml"
+    },
+    {
+        "story_id": "ST-003",
+        "plantuml_code": "@startuml\n\nclass Pedido {\n    - int id\n    - String estado\n    + completarPedido()\n}\n\nclass Usuario {\n    - String nombre\n    - String email\n    + realizarPedido()\n}\n\nUsuario \"1\" -- \"1\" Pedido : tiene\n\nPedido : estado = \"en proceso\"\n\n@enduml"
+    },
+    {
+        "story_id": "ST-004",
+        "plantuml_code": "@startuml\n\nclass Pedido {\n    - int id\n    - String estado\n    + completarPedido()\n    + cambiarEstado()\n}\n\nPedido : estado = \"completado\"\n\n@enduml"
+    },
+    {
+        "story_id": "ST-005",
+        "plantuml_code": "@startuml\n\nclass Usuario {\n    - String nombre\n    - String email\n    + obtenerCarrito()\n}\n\nclass Carrito {\n    - int id\n    - List<Disco> discos\n    + agregarDisco()\n    + eliminarDisco()\n}\n\nUsuario \"1\" -- \"1\" Carrito : tiene\n\n@enduml"
+    },
+    {
+        "story_id": "ST-006",
+        "plantuml_code": "@startuml\n\nclass Usuario {\n    - String nombre\n    - String email\n    - String password\n    + autenticar()\n}\n\nclass Sistema {\n    + validarCredenciales()\n}\n\nUsuario \"1\" -- \"1\" Sistema : inicia sesión\n\n@enduml"
+    }
+      ],
+    "classes": [
+    {
+        "file_name": "ServicioPedidosImpl.java",
+        "content": "package tienda.discos.servicioJPAImpl;\n\nimport tienda.discos.datos.serviciosWeb.ResumenPedido;\nimport tienda.discos.datos.serviciosWeb.InfoDiscos;\nimport java.util.List;\nimport java.util.Map;\n\npublic class ServicioPedidosImpl {\n    \n    public ResumenPedido crearPedido(String nombreCompleto, String direccion, String provincia, \n                                     String titularTarjeta, String numeroTarjeta, String tipoTarjeta, \n                                     String regalo, String observaciones, List<Map<String, Object>> discos) {\n        ResumenPedido pedido = new ResumenPedido();\n        pedido.setNombreCompleto(nombreCompleto);\n        pedido.setDireccion(direccion);\n        pedido.setProvincia(provincia);\n        pedido.setTitularTarjeta(titularTarjeta);\n        pedido.setNumeroTarjera(numeroTarjeta);\n        pedido.setTipoTarjeta(tipoTarjeta);\n        pedido.setRegalo(regalo);\n        pedido.setObservaciones(observaciones);\n        pedido.setDiscos(discos);\n        return pedido;\n    }\n    \n    public ResumenPedido obtenerPedido(int pedidoId) {\n        // Simulación de obtención de pedido desde la base de datos\n        return new ResumenPedido();\n    }\n    \n    public void actualizarEstadoPedido(int pedidoId, String estado) {\n        // Simulación de actualización del estado del pedido\n        System.out.println(\"Pedido \" + pedidoId + \" actualizado a estado: \" + estado);\n    }\n}"    },
+    {
+        "file_name": "ResumenPedido.java",
+        "content": "package tienda.discos.datos.serviciosWeb;\n\nimport java.util.Map;\nimport java.util.List;\n\npublic class ResumenPedido {\n    \n    private List<Map<String, Object>> Discos;\n    private String nombreCompleto;\n    private String direccion;\n    private String provincia;\n    private String titularTarjeta;\n    private String numeroTarjera;\n    private String tipoTarjeta;\n    private String regalo;\n    private String observaciones;\n    \n    public List<Map<String, Object>> getDiscos() {\n        return Discos;\n    }\n    public void setDiscos(List<Map<String, Object>> discos) {\n        Discos = discos;\n    }\n    public String getNombreCompleto() {\n        return nombreCompleto;\n    }\n    public void setNombreCompleto(String nombreCompleto) {\n        this.nombreCompleto = nombreCompleto;\n    }\n    public String getDireccion() {\n        return direccion;\n    }\n    public void setDireccion(String direccion) {\n        this.direccion = direccion;\n    }\n    public String getProvincia() {\n        return provincia;\n    }\n    public void setProvincia(String provincia) {\n        this.provincia = provincia;\n    }\n    public String getTitularTarjeta() {\n        return titularTarjeta;\n    }\n    public void setTitularTarjeta(String titularTarjeta) {\n        this.titularTarjeta = titularTarjeta;\n    }\n    public String getNumeroTarjera() {\n        return numeroTarjera;\n    }\n    public void setNumeroTarjera(String numeroTarjera) {\n        this.numeroTarjera = numeroTarjera;\n    }\n    public String getTipoTarjeta() {\n        return tipoTarjeta;\n    }\n    public void setTipoTarjeta(String tipoTarjeta) {\n        this.tipoTarjeta = tipoTarjeta;\n    }\n    public String getRegalo() {\n        return regalo;\n    }\n    public void setRegalo(String regalo) {\n        this.regalo = regalo;\n    }\n    public String getObservaciones() {\n        return observaciones;\n    }\n    public void setObservaciones(String observaciones) {\n        this.observaciones = observaciones;\n    }\n}"
+    },
+    {
+      "file_name": "ServicioCarritoImpl.java",
+      "content": "package tienda.discos.servicioJPAImpl;\n\nimport java.util.Iterator;\nimport java.util.List;\nimport java.util.Map;\n\nimport javax.persistence.EntityManager;\nimport javax.persistence.PersistenceContext;\nimport javax.persistence.Query;\n\nimport org.hibernate.query.NativeQuery;\nimport org.hibernate.query.internal.NativeQueryImpl;\nimport org.hibernate.transform.AliasToEntityMapResultTransformer;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\n\nimport tienda.discos.constantesSQL.ConstantesSQL;\nimport tienda.discos.model.Carrito;\nimport tienda.discos.model.Disco;\nimport tienda.discos.model.ProductoCarrito;\nimport tienda.discos.model.Usuario;\nimport tienda.discos.servicios.ServicioCarrito;\n\n@Service\n@Transactional\npublic class ServicioCarritoImpl implements ServicioCarrito {\n\n    @PersistenceContext\n    private EntityManager entityManager;\n\n    @Override\n    public void agreggarProducto(int idUsuario, int idProducto, int cantidad) {\n        Usuario uBaseDatos = (Usuario)entityManager.find(Usuario.class, idUsuario);\n        Carrito c = uBaseDatos.getCarrito();\n        if (c == null) {\n            // si el usuario tiene un carrito asociado, lo creo y lo guardo en db\n            c = new Carrito();\n            c.setUsuario(uBaseDatos);\n            uBaseDatos.setCarrito(c);\n            entityManager.persist(c);\n        }\n        boolean producto_en_carrito = false;\n        for (ProductoCarrito pc : c.getProductosCarrito()) {\n            if (pc.getDisco().getId() == idProducto) {\n                producto_en_carrito = true;\n                pc.setCantidad(pc.getCantidad() + cantidad);\n                entityManager.merge(pc);\n            }\n        }\n        if (!producto_en_carrito) {\n            ProductoCarrito pc = new ProductoCarrito();\n            pc.setCarrito(c);\n            pc.setDisco((Disco)entityManager.find(Disco.class, idProducto));\n            pc.setCantidad(cantidad);\n            entityManager.persist(pc);\n        }        \n    }\n\n    @Override\n    public void actualizarProductoCarrito(int idUsuario, int idProducto, int cantidad) {\n        // TODO Auto-generated method stub\n    }\n\n    @Override\n    public void borrarProductoCarrito(int idUsuario, int idProducto) {\n        Usuario u = entityManager.find(Usuario.class, idUsuario);\n        Carrito c = u.getCarrito();\n        if (c != null) {\n            Query query = entityManager.createNativeQuery(\n                    ConstantesSQL.SQL_BORRAR_PRODUCTO_CARRITO);\n            query.setParameter(\"carrito_id\", c.getId());\n            query.setParameter(\"id_disco\", idProducto);\n            query.executeUpdate();\n        }\n    }\n\n    @Override\n    public List<Map<String, Object>> obtenerProductosCarrito(int idUsuario) {\n        Usuario u = (Usuario)entityManager.find(Usuario.class, idUsuario);\n        Carrito c = u.getCarrito();\n        List<Map<String, Object>> res = null;\n        if(c != null ) {\n            Query query = entityManager.createNativeQuery(\n                    ConstantesSQL.SQL_OBTENER_PRODUCTOS_CARRITO);\n            query.setParameter(\"par_variable\", c.getId());\n            NativeQueryImpl nativeQuery = (NativeQueryImpl) query;\n            nativeQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);\n            res = nativeQuery.getResultList(); \n        }\n        return res;\n    }\n}"
+    },
+    {
+      "file_name": "ServicioUsuariosImpl.java",
+      "content": "package tienda.discos.servicioJPAImpl;\n\nimport java.util.List;\nimport java.util.Map;\n\nimport javax.persistence.EntityManager;\nimport javax.persistence.PersistenceContext;\nimport javax.persistence.Query;\n\nimport org.hibernate.query.internal.NativeQueryImpl;\nimport org.hibernate.transform.AliasToEntityMapResultTransformer;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\n\nimport tienda.discos.constantesSQL.ConstantesSQL;\nimport tienda.discos.model.Usuario;\nimport tienda.discos.servicios.ServicioUsuarios;\n\n@Service\n@Transactional\npublic class ServicioUsuariosImpl implements ServicioUsuarios {\n\n    @PersistenceContext\n    private EntityManager entityManager;\n\n    @Override\n    public void registarUsuario(Usuario u) {\n        entityManager.persist(u);\n    }\n\n    @Override\n    public Usuario obtenerUserPorMailYpass(String email, String pass) {\n        Query query = entityManager.createQuery(\"select u from Usuario u where u.email = :email and u.pass = :pass\");\n        query.setParameter(\"email\", email);\n        query.setParameter(\"pass\", pass);\n\n        List<Usuario> resultado = query.getResultList();\n        if (resultado.isEmpty()) {\n            return null;\n        } else {\n            return resultado.get(0);\n        }\n    }\n\n    @Override\n    public Usuario obtenerUserPorId(int id) {\n        return (Usuario) entityManager.createQuery(\"select u from Usuario u where u.id = :user_id\")\n                .setParameter(\"user_id\", id)\n                .getResultList().get(0);\n    }\n\n    @Override\n    public Map<String, Object> nativeObtenerUserPorId(int id) {\n        Query query = entityManager.createNativeQuery(ConstantesSQL.SQL_OBTENER_USUARIO_POR_ID);\n        query.setParameter(\"user_id\", id);\n        NativeQueryImpl nativequery = (NativeQueryImpl) query;\n        nativequery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);\n        List<Map<String, Object>> test = nativequery.getResultList();\n        return test.get(0);\n    }\n\n    @Override\n    public List<Usuario> obtenerUsuarios() {\n        return entityManager.createQuery(\"select u from Usuario u\")\n                .getResultList();\n    }\n\n    @Override\n    public void actualizarDatos(Integer id, String nombreUsuario, String pass, String telefono, String pais) {\n        Usuario u = entityManager.find(Usuario.class, id);\n        u.setNombre(nombreUsuario);\n        u.setPass(pass);\n        u.setTel(telefono);\n        u.setPais(pais);\n        entityManager.merge(u);\n    }\n\n    @Override\n    public void guardarCambiosUsuario(Usuario usuarioEditar) {\n        entityManager.merge(usuarioEditar);\n    }\n}"
+    }
+      ]
+
+  },
+  {
+    "project_id": "ECommerceStore02",
+    "project_name": "E Store",
+    "stories": [
+        {
+            "story_id": "S01",
+            "description": "As a user, I want to register and log in using email or Google authentication, so I can access my account.",
+            "acceptance_criteria": [
+                "User can register with an email and password.",
+                "User can log in using registered credentials.",
+                "User can log in via Google authentication."
+            ],
+            "related_classes": [
+                "user.js"
+            ]
+        },
+        {
+            "story_id": "S02",
+            "description": "As an admin, I want to add, edit, and delete products, so I can manage my store efficiently.",
+            "acceptance_criteria": [
+                "Admin can create new product entries.",
+                "Admin can update product details.",
+                "Admin can delete a product."
+            ],
+            "related_classes": [
+                "product.js"
+            ]
+        },
+        {
+            "story_id": "S03",
+            "description": "As a user, I want to browse products by category, so I can find items easily.",
+            "acceptance_criteria": [
+                "User can view a list of product categories.",
+                "User can browse products filtered by category."
+            ],
+            "related_classes": [
+                "categories.js",
+                "product.js"
+            ]
+        },
+        {
+            "story_id": "S04",
+            "description": "As a user, I want to add and remove products from my cart, so I can purchase what I need.",
+            "acceptance_criteria": [
+                "User can add a product to their cart.",
+                "User can remove a product from their cart.",
+                "User's cart updates in real-time."
+            ],
+            "related_classes": [
+                "user.js",
+                "product.js"
+            ]
+        },
+        {
+            "story_id": "S05",
+            "description": "As a user, I want to proceed to checkout and complete my payment, so I can receive my order.",
+            "acceptance_criteria": [
+                "User can view their cart summary before checkout.",
+                "User can proceed to payment.",
+                "User receives an order confirmation after payment."
+            ],
+            "related_classes": [
+                "orders.js",
+                "user.js",
+                "product.js"
+            ]
+        },
+        {
+            "story_id": "S06",
+            "description": "As a user, I want to leave reviews and ratings on products, so I can share my feedback with others.",
+            "acceptance_criteria": [
+                "User can submit a rating (1-5 stars).",
+                "User can leave a textual review.",
+                "User's review is linked to the product."
+            ],
+            "related_classes": [
+                "review.js",
+                "product.js"
+            ]
+        }
+    ],
+    "uml": [
+        {
+            "story_id": "S01-S06",
+            "plantuml_code": "\n@startuml\nclass User {\n    + title: String\n    + image: String\n    + Address: String\n    + googleId: String\n    + cart: List<Product>\n}\n\nclass Product {\n    + title: String\n    + price: Number\n    + description: String\n    + images: List<String>\n}\n\nclass Category {\n    + title: String\n    + slug: String\n}\n\nclass Order {\n    + txnId: String\n    + createdAt: Date\n    + delivered: Boolean\n}\n\nclass Review {\n    + user: String\n    + rating: Number\n    + review: String\n}\n\nUser \"1\" -- \"*\" Order : places\nUser \"1\" -- \"*\" Product : adds_to_cart\nProduct \"1\" -- \"*\" Review : has\nProduct \"1\" -- \"1\" Category : belongs_to\nOrder \"*\" -- \"*\" Product : contains\n\n@enduml\n"
+        }
+    ],
+    "classes": [
+        {
+            "file_name": "categories.js",
+            "content": "const mongoose = require('mongoose');\n\nconst categorySchema = new mongoose.Schema({\n    title: {\n        type: String,\n        required: true\n    },\n    slug: [\n        {\n            type: mongoose.Schema.Types.ObjectId\n        }\n    ]\n});\n\nconst Category = mongoose.model('categories', categorySchema);\n\nmodule.exports = Category;\n"
+        },
+        {
+            "file_name": "review.js",
+            "content": "const mongoose = require('mongoose');\n\nconst reviewSchema = new mongoose.Schema({\n    user: {\n        type: String,\n        required: true\n    },\n    rating: {\n        type: Number,\n        min: 1,\n        max: 5,\n        required: true\n    },\n    review: {\n        type: String\n    }\n});\n\nconst Review = mongoose.model('reviews', reviewSchema);\n\nmodule.exports = Review;\n"
+        },
+        {
+            "file_name": "orders.js",
+            "content": "const mongoose = require('mongoose');\n\nconst orderSchema = new mongoose.Schema({\n    products: [\n        {\n            type: mongoose.Schema.Types.ObjectId,\n            ref: 'Products'\n        }\n    ],\n    user: {\n        type: mongoose.Schema.Types.ObjectId,\n        ref: 'User'\n    },\n    txnId: {\n        type: String,\n        required: true\n    },\n    createdAt: {\n        type: Date,\n        required: true\n    },\n    delevered: {\n        type: Boolean,\n        required: true,\n        default: false\n    },\n    amount: {\n        type: Number,\n        required: true\n    }\n});\n\nconst Order = mongoose.model('Order', orderSchema);\n\nmodule.exports = Order;\n"
+        },
+        {
+            "file_name": "user.js",
+            "content": "const mongoose = require('mongoose');\nconst passportLocalMongoose = require('passport-local-mongoose');\nconst Product = require('./product');\nconst Order = require('./orders');\n\nconst userSchema = new mongoose.Schema({\n    title: {\n        type: String,\n        required: true\n    },\n    image: {\n        type: String\n    },\n    Address: {\n        type: String\n    },\n    googleId: {\n        type: String\n    },\n    cart: [\n        {\n            type: mongoose.Schema.Types.ObjectId,\n            ref: 'Products'\n        }\n    ]\n});\n\nuserSchema.plugin(passportLocalMongoose);\n\nconst User = mongoose.model('users', userSchema);\n\nmodule.exports = User;\n"
+        },
+        {
+            "file_name": "product.js",
+            "content": "const mongoose = require('mongoose');\n\nconst productSchema = new mongoose.Schema({\n    title: { type: String, required: true, min: 4, max: 50 },\n    price: { type: Number, required: true },\n    description: { type: String, max: 1000 },\n    images: [{ type: String }],\n    reviews: [\n        {\n            type: mongoose.Schema.Types.ObjectId,\n            ref: 'reviews'\n        }\n    ],\n    category: {\n        type: mongoose.Schema.Types.ObjectId,\n        ref: 'categories'\n    }\n});\n\nconst Product = mongoose.model('Products', productSchema);\n\nmodule.exports = Product;\n"
+        }
     ]
-  }
-  
+},
+{
+  "project_id": "ECommerceStore03",
+  "project_name": "spring-microservices-ecommerce",
+  "stories": [
+      {
+          "story_id": "S01",
+          "description": "As an admin, I want to add, update, and delete products, so I can manage my inventory.",
+          "acceptance_criteria": [
+              "Admin can create a new product with a name, description, and price.",
+              "Admin can update an existing product's details.",
+              "Admin can delete a product."
+          ],
+          "related_classes": [
+              "Product.java"
+          ]
+      },
+      {
+          "story_id": "S02",
+          "description": "As a customer, I want to place an order, so I can purchase products.",
+          "acceptance_criteria": [
+              "Users can add products to an order using their SKU codes.",
+              "Orders are stored in the system with an order number.",
+              "Users receive a confirmation when an order is placed."
+          ],
+          "related_classes": [
+              "Order.java",
+              "Product.java"
+          ]
+      },
+      {
+          "story_id": "S03",
+          "description": "As a customer, I want to view my past orders, so I can track my purchases.",
+          "acceptance_criteria": [
+              "Users can retrieve their past orders by order number.",
+              "Orders include product details and prices."
+          ],
+          "related_classes": [
+              "Order.java"
+          ]
+      }
+  ],
+  "uml": [
+      {
+          "story_id": "S01-S03",
+          "plantuml_code": "\n@startuml\nclass Product {\n    + id: String\n    + name: String\n    + description: String\n    + price: BigDecimal\n}\n\nclass Order {\n    + id: UUID\n    + orderNumber: String\n    + skuCode: String\n    + quantity: Integer\n    + price: BigDecimal\n}\n\nOrder \"1\" -- \"1\" Product : contains\n\n@enduml\n"
+      }
+  ],
+  "classes": [
+      {
+          "file_name": "Product.java",
+          "content": "package me.vasujain.microservices.product_service.model;\n\nimport lombok.*;\nimport org.springframework.data.annotation.Id;\nimport org.springframework.data.mongodb.core.mapping.Document;\n\nimport java.math.BigDecimal;\n\n@Document(value = \"products\")\n@AllArgsConstructor\n@NoArgsConstructor\n@Builder\n@Data\npublic class Product {\n    @Id\n    private String id;\n    private String name;\n    private String description;\n    private BigDecimal price;\n}\n"
+      },
+      {
+          "file_name": "Order.java",
+          "content": "package me.vasujain.microservices.order_service.model;\n\nimport jakarta.persistence.*;\nimport lombok.*;\n\nimport java.math.BigDecimal;\nimport java.util.UUID;\n\n@Entity\n@Table(name = \"t_orders\")\n@Getter\n@Setter\n@Builder\n@AllArgsConstructor\n@NoArgsConstructor\npublic class Order {\n    @Id\n    @GeneratedValue(strategy = GenerationType.UUID)\n    private UUID id;\n\n    private String orderNumber;\n    private String skuCode;\n    private Integer quantity;\n    private BigDecimal price;\n}\n"
+      }
+  ]
+},
+{
+  "project_id": "ECommerceStore04",
+  "project_name": "ecommerce-microservice-backend-app",
+  "stories": [
+      {
+          "story_id": "S01",
+          "description": "As a customer, I want to place an order, so I can purchase products.",
+          "acceptance_criteria": [
+              "Users can add products to an order.",
+              "Orders store product details and timestamps."
+          ],
+          "related_classes": [
+              "Order.java",
+              "Product.java",
+              "User.java"
+          ]
+      },
+      {
+          "story_id": "S02",
+          "description": "As a customer, I want to add and remove products from my cart, so I can manage my shopping list.",
+          "acceptance_criteria": [
+              "Users can add a product to their cart.",
+              "Users can remove products from their cart."
+          ],
+          "related_classes": [
+              "Cart.java",
+              "Product.java",
+              "User.java"
+          ]
+      },
+      {
+          "story_id": "S03",
+          "description": "As a user, I want to make a payment for my order, so I can complete my purchase.",
+          "acceptance_criteria": [
+              "Users can initiate a payment process.",
+              "Users can see payment confirmation."
+          ],
+          "related_classes": [
+              "Payment.java",
+              "Order.java"
+          ]
+      },
+      {
+          "story_id": "S04",
+          "description": "As a user, I want to log in securely, so I can access my account.",
+          "acceptance_criteria": [
+              "Users can register and log in with email/password.",
+              "Users are assigned roles (ADMIN, USER)."
+          ],
+          "related_classes": [
+              "User.java"
+          ]
+      },
+      {
+          "story_id": "S05",
+          "description": "As an admin, I want to add and update products, so I can manage inventory.",
+          "acceptance_criteria": [
+              "Admins can create and update product entries.",
+              "Products are linked to categories."
+          ],
+          "related_classes": [
+              "Product.java",
+              "Category.java"
+          ]
+      },
+      {
+          "story_id": "S06",
+          "description": "As a user, I want to save my favorite products, so I can view them later.",
+          "acceptance_criteria": [
+              "Users can favorite a product.",
+              "Users can view a list of favorites."
+          ],
+          "related_classes": [
+              "Favourite.java",
+              "User.java",
+              "Product.java"
+          ]
+      }
+  ],
+  "uml": [
+      {
+          "story_id": "S01-S06",
+          "plantuml_code": "\n@startuml\nclass User {\n    + id: UUID\n    + email: String\n    + role: RoleBasedAuthority\n}\n\nclass Order {\n    + id: UUID\n    + orderNumber: String\n    + userId: UUID\n    + createdAt: LocalDateTime\n}\n\nclass Cart {\n    + id: UUID\n    + userId: UUID\n}\n\nclass Payment {\n    + id: UUID\n    + orderId: UUID\n    + status: PaymentStatus\n}\n\nclass Product {\n    + id: UUID\n    + name: String\n    + price: BigDecimal\n    + categoryId: UUID\n}\n\nclass Category {\n    + id: UUID\n    + name: String\n}\n\nclass Favourite {\n    + userId: UUID\n    + productId: UUID\n}\n\nUser \"1\" -- \"*\" Order : places\nUser \"1\" -- \"1\" Cart : owns\nUser \"1\" -- \"*\" Favourite : favorites\nOrder \"1\" -- \"1\" Payment : has\nOrder \"*\" -- \"*\" Product : contains\nCart \"*\" -- \"*\" Product : contains\nProduct \"1\" -- \"1\" Category : belongs_to\n\n@enduml\n"
+      }
+  ],
+  "classes": [
+      {
+          "file_name": "Order.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.LocalDateTime;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.ManyToOne;\nimport javax.persistence.Table;\n\nimport org.springframework.format.annotation.DateTimeFormat;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\nimport com.fasterxml.jackson.databind.annotation.JsonDeserialize;\nimport com.fasterxml.jackson.databind.annotation.JsonSerialize;\nimport com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;\nimport com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;\nimport com.selimhorri.app.constant.AppConstant;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"orders\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"cart\"})\n@Data\n@Builder\npublic final class Order extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"order_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer orderId;\n\t\n\t@JsonSerialize(using = LocalDateTimeSerializer.class)\n\t@JsonDeserialize(using = LocalDateTimeDeserializer.class)\n\t@JsonFormat(pattern = AppConstant.LOCAL_DATE_TIME_FORMAT, shape = Shape.STRING)\n\t@DateTimeFormat(pattern = AppConstant.LOCAL_DATE_TIME_FORMAT)\n\t@Column(name = \"order_date\")\n\tprivate LocalDateTime orderDate;\n\t\n\t@Column(name = \"order_desc\")\n\tprivate String orderDesc;\n\t\n\t@Column(name = \"order_fee\", columnDefinition = \"decimal\")\n\tprivate Double orderFee;\n\t\n\t@ManyToOne(fetch = FetchType.EAGER)\n\t@JoinColumn(name = \"cart_id\")\n\tprivate Cart cart;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Cart.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.util.Set;\n\nimport javax.persistence.CascadeType;\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.OneToMany;\nimport javax.persistence.Table;\n\nimport com.fasterxml.jackson.annotation.JsonIgnore;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"carts\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"orders\"})\n@Data\n@Builder\npublic final class Cart extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"cart_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer cartId;\n\t\n\t@Column(name = \"user_id\")\n\tprivate Integer userId;\n\t\n\t@JsonIgnore\n\t@OneToMany(mappedBy = \"cart\", fetch = FetchType.LAZY, cascade = CascadeType.ALL)\n\tprivate Set<Order> orders;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "AbstractMappedEntity.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.Instant;\n\nimport javax.persistence.Column;\nimport javax.persistence.MappedSuperclass;\n\nimport org.springframework.data.annotation.CreatedDate;\nimport org.springframework.data.annotation.LastModifiedDate;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\n\nimport lombok.AccessLevel;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@MappedSuperclass\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@AllArgsConstructor(access = AccessLevel.PROTECTED)\n@Data\nabstract public class AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@CreatedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"created_at\")\n\tprivate Instant createdAt;\n\t\n\t@LastModifiedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"updated_at\")\n\tprivate Instant updatedAt;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "PaymentStatus.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport lombok.Getter;\nimport lombok.RequiredArgsConstructor;\n\n@RequiredArgsConstructor\n@Getter\npublic enum PaymentStatus {\n\t\n\tNOT_STARTED(\"not_started\"),\n\tIN_PROGRESS(\"in_progress\"),\n\tCOMPLETED(\"completed\");\n\t\n\tprivate final String status;\n\t\n}\n"
+      },
+      {
+          "file_name": "Payment.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.EnumType;\nimport javax.persistence.Enumerated;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.Table;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"payments\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true)\n@Data\n@Builder\npublic final class Payment extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"payment_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer paymentId;\n\t\n\t@Column(name = \"order_id\")\n\tprivate Integer orderId;\n\t\n\t@Column(name = \"is_payed\")\n\tprivate Boolean isPayed;\n\t\n\t@Enumerated(EnumType.STRING)\n\t@Column(name = \"payment_status\")\n\tprivate PaymentStatus paymentStatus;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "AbstractMappedEntity.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.Instant;\n\nimport javax.persistence.Column;\nimport javax.persistence.MappedSuperclass;\n\nimport org.springframework.data.annotation.CreatedDate;\nimport org.springframework.data.annotation.LastModifiedDate;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\n\nimport lombok.AccessLevel;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@MappedSuperclass\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@AllArgsConstructor(access = AccessLevel.PROTECTED)\n@Data\nabstract public class AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@CreatedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"created_at\")\n\tprivate Instant createdAt;\n\t\n\t@LastModifiedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"updated_at\")\n\tprivate Instant updatedAt;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "User.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.util.Set;\n\nimport javax.persistence.CascadeType;\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.OneToMany;\nimport javax.persistence.OneToOne;\nimport javax.persistence.Table;\nimport javax.validation.constraints.Email;\n\nimport com.fasterxml.jackson.annotation.JsonIgnore;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"users\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"addresses\", \"credential\"})\n@Data\n@Builder\npublic final class User extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"user_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer userId;\n\t\n\t@Column(name = \"first_name\")\n\tprivate String firstName;\n\t\n\t@Column(name = \"last_name\")\n\tprivate String lastName;\n\t\n\t@Column(name = \"image_url\")\n\tprivate String imageUrl;\n\t\n\t@Email(message = \"*Input must be in Email format!**\")\n\tprivate String email;\n\t\n\tprivate String phone;\n\t\n\t@JsonIgnore\n\t@OneToMany(cascade = CascadeType.ALL, mappedBy = \"user\", fetch = FetchType.LAZY)\n\tprivate Set<Address> addresses;\n\t\n\t@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = \"user\")\n\tprivate Credential credential;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Address.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.ManyToOne;\nimport javax.persistence.Table;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"address\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"user\"})\n@Data\n@Builder\npublic final class Address extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"address_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer addressId;\n\t\n\t@Column(name = \"full_address\", unique = true)\n\tprivate String fullAddress;\n\t\n\t@Column(name = \"postal_code\")\n\tprivate String postalCode;\n\t\n\tprivate String city;\n\t\n\t@ManyToOne\n\t@JoinColumn(name = \"user_id\")\n\tprivate User user;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "VerificationToken.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.LocalDate;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.ManyToOne;\nimport javax.persistence.Table;\n\nimport org.springframework.format.annotation.DateTimeFormat;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\nimport com.selimhorri.app.constant.AppConstant;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"verification_tokens\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"credential\"})\n@Data\n@Builder\npublic final class VerificationToken extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"verification_token_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer verificationTokenId;\n\t\n\t@Column(name = \"verif_token\")\n\tprivate String token;\n\t\n\t@JsonFormat(pattern = AppConstant.LOCAL_DATE_FORMAT, shape = Shape.STRING)\n\t@DateTimeFormat(pattern = AppConstant.LOCAL_DATE_FORMAT)\n\t@Column(name = \"expire_date\")\n\tprivate LocalDate expireDate;\n\t\n\t@ManyToOne(fetch = FetchType.EAGER)\n\t@JoinColumn(name = \"credential_id\")\n\tprivate Credential credential;\n\t\n}\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Credential.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.util.Set;\n\nimport javax.persistence.CascadeType;\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.EnumType;\nimport javax.persistence.Enumerated;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.OneToMany;\nimport javax.persistence.OneToOne;\nimport javax.persistence.Table;\n\nimport com.fasterxml.jackson.annotation.JsonIgnore;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"credentials\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"user\", \"verificationTokens\"})\n@Data\n@Builder\npublic final class Credential extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"credential_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer credentialId;\n\t\n\t@Column(unique = true)\n\tprivate String username;\n\t\n\tprivate String password;\n\t\n\t@Enumerated(EnumType.STRING)\n\t@Column(name = \"role\")\n\tprivate RoleBasedAuthority roleBasedAuthority;\n\t\n\t@Column(name = \"is_enabled\")\n\tprivate Boolean isEnabled;\n\t\n\t@Column(name = \"is_account_non_expired\")\n\tprivate Boolean isAccountNonExpired;\n\t\n\t@Column(name = \"is_account_non_locked\")\n\tprivate Boolean isAccountNonLocked;\n\t\n\t@Column(name = \"is_credentials_non_expired\")\n\tprivate Boolean isCredentialsNonExpired;\n\t\n\t@JsonIgnore\n\t@OneToOne(fetch = FetchType.LAZY)\n\t@JoinColumn(name = \"user_id\", nullable = false)\n\tprivate User user;\n\t\n\t@JsonIgnore\n\t@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = \"credential\")\n\tprivate Set<VerificationToken> verificationTokens;\n\t\n}\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "RoleBasedAuthority.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport lombok.Getter;\nimport lombok.RequiredArgsConstructor;\n\n@RequiredArgsConstructor\n@Getter\npublic enum RoleBasedAuthority {\n\t\n\tROLE_USER(\"USER\"),\n\tROLE_ADMIN(\"ADMIN\");\n\t\n\tprivate final String role;\n\t\n}\n"
+      },
+      {
+          "file_name": "AbstractMappedEntity.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.Instant;\n\nimport javax.persistence.Column;\nimport javax.persistence.MappedSuperclass;\n\nimport org.springframework.data.annotation.CreatedDate;\nimport org.springframework.data.annotation.LastModifiedDate;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\n\nimport lombok.AccessLevel;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@MappedSuperclass\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@AllArgsConstructor(access = AccessLevel.PROTECTED)\n@Data\nabstract public class AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@CreatedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"created_at\")\n\tprivate Instant createdAt;\n\t\n\t@LastModifiedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"updated_at\")\n\tprivate Instant updatedAt;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Product.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.ManyToOne;\nimport javax.persistence.Table;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"products\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"category\"})\n@Data\n@Builder\npublic final class Product extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"product_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer productId;\n\t\n\t@Column(name = \"product_title\")\n\tprivate String productTitle;\n\t\n\t@Column(name = \"image_url\")\n\tprivate String imageUrl;\n\t\n\t@Column(unique = true)\n\tprivate String sku;\n\t\n\t@Column(name = \"price_unit\", columnDefinition = \"decimal\")\n\tprivate Double priceUnit;\n\t\n\t@Column(name = \"quantity\")\n\tprivate Integer quantity;\n\t\n\t@ManyToOne(fetch = FetchType.EAGER)\n\t@JoinColumn(name = \"category_id\")\n\tprivate Category category;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Category.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.util.Set;\n\nimport javax.persistence.CascadeType;\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.FetchType;\nimport javax.persistence.GeneratedValue;\nimport javax.persistence.GenerationType;\nimport javax.persistence.Id;\nimport javax.persistence.JoinColumn;\nimport javax.persistence.ManyToOne;\nimport javax.persistence.OneToMany;\nimport javax.persistence.Table;\n\nimport com.fasterxml.jackson.annotation.JsonIgnore;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"categories\")\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true, exclude = {\"subCategories\", \"parentCategory\", \"products\"})\n@Data\n@Builder\npublic final class Category extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\t@Column(name = \"category_id\", unique = true, nullable = false, updatable = false)\n\tprivate Integer categoryId;\n\t\n\t@Column(name = \"category_title\")\n\tprivate String categoryTitle;\n\t\n\t@Column(name = \"image_url\")\n\tprivate String imageUrl;\n\t\n\t@JsonIgnore\n\t@OneToMany(mappedBy = \"parentCategory\", fetch = FetchType.LAZY, cascade = CascadeType.ALL)\n\tprivate Set<Category> subCategories;\n\t\n\t@ManyToOne(fetch = FetchType.EAGER)\n\t@JoinColumn(name = \"parent_category_id\")\n\tprivate Category parentCategory;\n\t\n\t@JsonIgnore\n\t@OneToMany(mappedBy = \"category\", fetch = FetchType.LAZY, cascade = CascadeType.ALL)\n\tprivate Set<Product> products;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "AbstractMappedEntity.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.Instant;\n\nimport javax.persistence.Column;\nimport javax.persistence.MappedSuperclass;\n\nimport org.springframework.data.annotation.CreatedDate;\nimport org.springframework.data.annotation.LastModifiedDate;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\n\nimport lombok.AccessLevel;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@MappedSuperclass\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@AllArgsConstructor(access = AccessLevel.PROTECTED)\n@Data\nabstract public class AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@CreatedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"created_at\")\n\tprivate Instant createdAt;\n\t\n\t@LastModifiedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"updated_at\")\n\tprivate Instant updatedAt;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "Favourite.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.LocalDateTime;\n\nimport javax.persistence.Column;\nimport javax.persistence.Entity;\nimport javax.persistence.Id;\nimport javax.persistence.IdClass;\nimport javax.persistence.Table;\n\nimport org.springframework.format.annotation.DateTimeFormat;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\nimport com.fasterxml.jackson.databind.annotation.JsonDeserialize;\nimport com.fasterxml.jackson.databind.annotation.JsonSerialize;\nimport com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;\nimport com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;\nimport com.selimhorri.app.constant.AppConstant;\nimport com.selimhorri.app.domain.id.FavouriteId;\n\nimport lombok.AllArgsConstructor;\nimport lombok.Builder;\nimport lombok.Data;\nimport lombok.EqualsAndHashCode;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"favourites\")\n@IdClass(FavouriteId.class)\n@NoArgsConstructor\n@AllArgsConstructor\n@EqualsAndHashCode(callSuper = true)\n@Data\n@Builder\npublic final class Favourite extends AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@Id\n\t@Column(name = \"user_id\", nullable = false)\n\tprivate Integer userId;\n\t\n\t@Id\n\t@Column(name = \"product_id\", nullable = false)\n\tprivate Integer productId;\n\t\n\t@Id\n\t@Column(name = \"like_date\", nullable = false)\n\t@JsonSerialize(using = LocalDateTimeSerializer.class)\n\t@JsonDeserialize(using = LocalDateTimeDeserializer.class)\n\t@JsonFormat(pattern = AppConstant.LOCAL_DATE_TIME_FORMAT, shape = Shape.STRING)\n\t@DateTimeFormat(pattern = AppConstant.LOCAL_DATE_TIME_FORMAT)\n\tprivate LocalDateTime likeDate;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      },
+      {
+          "file_name": "AbstractMappedEntity.java",
+          "content": "package com.selimhorri.app.domain;\n\nimport java.io.Serializable;\nimport java.time.Instant;\n\nimport javax.persistence.Column;\nimport javax.persistence.MappedSuperclass;\n\nimport org.springframework.data.annotation.CreatedDate;\nimport org.springframework.data.annotation.LastModifiedDate;\n\nimport com.fasterxml.jackson.annotation.JsonFormat;\nimport com.fasterxml.jackson.annotation.JsonFormat.Shape;\n\nimport lombok.AccessLevel;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@MappedSuperclass\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\n@AllArgsConstructor(access = AccessLevel.PROTECTED)\n@Data\nabstract public class AbstractMappedEntity implements Serializable {\n\t\n\tprivate static final long serialVersionUID = 1L;\n\t\n\t@CreatedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"created_at\")\n\tprivate Instant createdAt;\n\t\n\t@LastModifiedDate\n\t@JsonFormat(shape = Shape.STRING)\n\t@Column(name = \"updated_at\")\n\tprivate Instant updatedAt;\n\t\n}\n\n\n\n\n\n\n\n\n\n\n"
+      }
+  ]
+},
+{
+  "project_id": "ECommerceStore05",
+  "project_name": "E-Commerce-Application",
+  "stories": [
+      {
+          "story_id": "S01",
+          "description": "As a customer, I want to place an order, so I can purchase products.",
+          "acceptance_criteria": [
+              "Users can add products to an order.",
+              "Orders store product details and timestamps."
+          ],
+          "related_classes": [
+              "Order.java",
+              "OrderItem.java",
+              "User.java"
+          ]
+      },
+      {
+          "story_id": "S02",
+          "description": "As a customer, I want to add and remove products from my cart, so I can manage my shopping list.",
+          "acceptance_criteria": [
+              "Users can add a product to their cart.",
+              "Users can remove products from their cart."
+          ],
+          "related_classes": [
+              "Cart.java",
+              "CartItem.java",
+              "User.java"
+          ]
+      },
+      {
+          "story_id": "S03",
+          "description": "As a user, I want to make a payment for my order, so I can complete my purchase.",
+          "acceptance_criteria": [
+              "Users can initiate a payment process.",
+              "Users can see payment confirmation."
+          ],
+          "related_classes": [
+              "Payment.java",
+              "Order.java"
+          ]
+      },
+      {
+          "story_id": "S04",
+          "description": "As a user, I want to log in securely, so I can access my account.",
+          "acceptance_criteria": [
+              "Users can register and log in with email/password.",
+              "Users are assigned roles (ADMIN, USER)."
+          ],
+          "related_classes": [
+              "User.java",
+              "Role.java"
+          ]
+      },
+      {
+          "story_id": "S05",
+          "description": "As an admin, I want to add and update products, so I can manage inventory.",
+          "acceptance_criteria": [
+              "Admins can create and update product entries.",
+              "Products are linked to categories."
+          ],
+          "related_classes": [
+              "Product.java",
+              "Category.java"
+          ]
+      }
+  ],
+  "uml": [
+      {
+          "story_id": "S01-S05",
+          "plantuml_code": "\n@startuml\nclass User {\n    + id: Long\n    + email: String\n    + role: Role\n}\n\nclass Order {\n    + id: Long\n    + userId: Long\n    + createdAt: LocalDate\n}\n\nclass OrderItem {\n    + id: Long\n    + orderId: Long\n    + productId: Long\n}\n\nclass Payment {\n    + id: Long\n    + orderId: Long\n    + status: PaymentStatus\n}\n\nclass Product {\n    + id: Long\n    + name: String\n    + price: BigDecimal\n    + categoryId: Long\n}\n\nclass Category {\n    + id: Long\n    + name: String\n}\n\nclass Cart {\n    + id: Long\n    + userId: Long\n}\n\nclass CartItem {\n    + id: Long\n    + cartId: Long\n    + productId: Long\n}\n\nUser \"1\" -- \"*\" Order : places\nUser \"1\" -- \"1\" Cart : owns\nOrder \"1\" -- \"*\" OrderItem : contains\nOrder \"1\" -- \"1\" Payment : has\nCart \"*\" -- \"*\" CartItem : contains\nProduct \"1\" -- \"1\" Category : belongs_to\nOrderItem \"1\" -- \"1\" Product : contains\nCartItem \"1\" -- \"1\" Product : contains\n\n@enduml\n"
+      }
+  ],
+  "classes": [
+      {
+          "file_name": "Order.java",
+          "content": "package com.app.entites;\n\nimport java.time.LocalDate;\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Column;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.OneToMany;\nimport jakarta.persistence.OneToOne;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.Email;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"orders\")\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Order {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long orderId;\n\t\n\t@Email\n\t@Column(nullable = false)\n\tprivate String email;\n\n\t@OneToMany(mappedBy = \"order\", cascade = { CascadeType.PERSIST, CascadeType.MERGE })\n\tprivate List<OrderItem> orderItems = new ArrayList<>();\n\n\tprivate LocalDate orderDate;\n\t\n\t@OneToOne\n\t@JoinColumn(name = \"payment_id\")\n\tprivate Payment payment;\n\t\n\tprivate Double totalAmount;\n\tprivate String orderStatus;\n}"
+      },
+      {
+          "file_name": "OrderItem.java",
+          "content": "package com.app.entites;\n\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.ManyToOne;\nimport jakarta.persistence.Table;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Data\n@Table(name = \"order_items\")\n@AllArgsConstructor\n@NoArgsConstructor\npublic class OrderItem {\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long orderItemId;\n\t\n\t@ManyToOne\n\t@JoinColumn(name = \"product_id\")\n\tprivate Product product;\n\t\n\t@ManyToOne\n\t@JoinColumn(name = \"order_id\")\n\tprivate Order order;\n\t\n\tprivate Integer quantity;\n\tprivate double discount;\n\tprivate double orderedProductPrice;\n\t\n}\n"
+      },
+      {
+          "file_name": "Product.java",
+          "content": "package com.app.entites;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.FetchType;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.ManyToOne;\nimport jakarta.persistence.OneToMany;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"products\")\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Product {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.AUTO)\n\tprivate Long productId;\n\n\t@NotBlank\n\t@Size(min = 3, message = \"Product name must contain atleast 3 characters\")\n\tprivate String productName;\n\t\n\tprivate String image;\n\t\n\t@NotBlank\n\t@Size(min = 6, message = \"Product description must contain atleast 6 characters\")\n\tprivate String description;\n\t\n\tprivate Integer quantity;\n\tprivate double price;\n\tprivate double discount;\n\tprivate double specialPrice;\n\n\t@ManyToOne\n\t@JoinColumn(name = \"category_id\")\n\tprivate Category category;\n\t\n\t@OneToMany(mappedBy = \"product\", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)\n\tprivate List<CartItem> products = new ArrayList<>();\n\t\n\t@OneToMany(mappedBy = \"product\", cascade = { CascadeType.PERSIST, CascadeType.MERGE })\n\tprivate List<OrderItem> orderItems = new ArrayList<>();\n\n}\n"
+      },
+      {
+          "file_name": "Payment.java",
+          "content": "package com.app.entites;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.OneToOne;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Data\n@Table(name = \"payments\")\n@AllArgsConstructor\n@NoArgsConstructor\npublic class Payment {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long paymentId;\n\n\t@OneToOne(mappedBy = \"payment\", cascade = { CascadeType.PERSIST, CascadeType.MERGE })\n\tprivate Order order;\n\n\t@NotBlank\n\t@Size(min = 4, message = \"Payment method must contain atleast 4 characters\")\n\tprivate String paymentMethod;\n\n}\n"
+      },
+      {
+          "file_name": "Category.java",
+          "content": "package com.app.entites;\n\nimport java.util.List;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.OneToMany;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Data\n@Table(name = \"categories\")\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Category {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long categoryId;\n\n\t@NotBlank\n\t@Size(min = 5, message = \"Category name must contain atleast 5 characters\")\n\tprivate String categoryName;\n\n\t@OneToMany(mappedBy = \"category\", cascade =  CascadeType.ALL )\n\tprivate List<Product> products;\n\n}\n"
+      },
+      {
+          "file_name": "User.java",
+          "content": "package com.app.entites;\n\nimport java.util.ArrayList;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Set;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Column;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.FetchType;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.JoinTable;\nimport jakarta.persistence.ManyToMany;\nimport jakarta.persistence.OneToOne;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.Email;\nimport jakarta.validation.constraints.Pattern;\nimport jakarta.validation.constraints.Size;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"users\")\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class User {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long userId;\n\n\t@Size(min = 5, max = 20, message = \"First Name must be between 5 and 30 characters long\")\n\t@Pattern(regexp = \"^[a-zA-Z]*$\", message = \"First Name must not contain numbers or special characters\")\n\tprivate String firstName;\n\n\t@Size(min = 5, max = 20, message = \"Last Name must be between 5 and 30 characters long\")\n\t@Pattern(regexp = \"^[a-zA-Z]*$\", message = \"Last Name must not contain numbers or special characters\")\n\tprivate String lastName;\n\n\t@Size(min = 10, max = 10, message = \"Mobile Number must be exactly 10 digits long\")\n\t@Pattern(regexp = \"^\\\\d{10}$\", message = \"Mobile Number must contain only Numbers\")\n\tprivate String mobileNumber;\n\n\t@Email\n\t@Column(unique = true, nullable = false)\n\tprivate String email;\n\n\tprivate String password;\n\n\t@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)\n\t@JoinTable(name = \"user_role\", joinColumns = @JoinColumn(name = \"user_id\"), inverseJoinColumns = @JoinColumn(name = \"role_id\"))\n\tprivate Set<Role> roles = new HashSet<>();\n\n\t@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })\n\t@JoinTable(name = \"user_address\", joinColumns = @JoinColumn(name = \"user_id\"), inverseJoinColumns = @JoinColumn(name = \"address_id\"))\n\tprivate List<Address> addresses = new ArrayList<>();\n\n\t@OneToOne(mappedBy = \"user\", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)\n\tprivate Cart cart;\n\n}\n"
+      },
+      {
+          "file_name": "CartItem.java",
+          "content": "package com.app.entites;\n\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.ManyToOne;\nimport jakarta.persistence.Table;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"cart_items\")\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class CartItem {\n\t\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long cartItemId;\n\t\n\t@ManyToOne\n\t@JoinColumn(name = \"cart_id\")\n\tprivate Cart cart;\n\t\n\t@ManyToOne\n\t@JoinColumn(name = \"product_id\")\n\tprivate Product product;\n\t\n\tprivate Integer quantity;\n\tprivate double discount;\n\tprivate double productPrice;\n\t\n}\n"
+      },
+      {
+          "file_name": "Address.java",
+          "content": "package com.app.entites;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.ManyToMany;\nimport jakarta.persistence.Table;\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Table(name = \"addresses\")\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Address {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long addressId;\n\n\t@NotBlank\n\t@Size(min = 5, message = \"Street name must contain atleast 5 characters\")\n\tprivate String street;\n\t\n\t@NotBlank\n\t@Size(min = 5, message = \"Building name must contain atleast 5 characters\")\n\tprivate String buildingName;\n\t\n\t@NotBlank\n\t@Size(min = 4, message = \"City name must contain atleast 4 characters\")\n\tprivate String city;\n\t\n\t@NotBlank\n\t@Size(min = 2, message = \"State name must contain atleast 2 characters\")\n\tprivate String state;\n\t\n\t@NotBlank\n\t@Size(min = 2, message = \"Country name must contain atleast 2 characters\")\n\tprivate String country;\n\t\n\t@NotBlank\n\t@Size(min = 6, message = \"Pincode must contain atleast 6 characters\")\n\tprivate String pincode;\n\n\t@ManyToMany(mappedBy = \"addresses\")\n\tprivate List<User> users = new ArrayList<>();\n\n\tpublic Address(String country, String state, String city, String pincode, String street, String buildingName) {\n\t\tthis.country = country;\n\t\tthis.state = state;\n\t\tthis.city = city;\n\t\tthis.pincode = pincode;\n\t\tthis.street = street;\n\t\tthis.buildingName = buildingName;\n\t}\n\n}\n"
+      },
+      {
+          "file_name": "Role.java",
+          "content": "package com.app.entites;\n\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.Table;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Data\n@Table(name = \"roles\")\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Role {\n\n\t@Id\n\tprivate Long roleId;\n\tprivate String roleName;\n}\n"
+      },
+      {
+          "file_name": "Cart.java",
+          "content": "package com.app.entites;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport jakarta.persistence.CascadeType;\nimport jakarta.persistence.Entity;\nimport jakarta.persistence.GeneratedValue;\nimport jakarta.persistence.GenerationType;\nimport jakarta.persistence.Id;\nimport jakarta.persistence.JoinColumn;\nimport jakarta.persistence.OneToMany;\nimport jakarta.persistence.OneToOne;\nimport jakarta.persistence.Table;\nimport lombok.AllArgsConstructor;\nimport lombok.Data;\nimport lombok.NoArgsConstructor;\n\n@Entity\n@Data\n@Table(name = \"carts\")\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Cart {\n\n\t@Id\n\t@GeneratedValue(strategy = GenerationType.IDENTITY)\n\tprivate Long cartId;\n\n\t@OneToOne\n\t@JoinColumn(name = \"user_id\")\n\tprivate User user;\n\n\t@OneToMany(mappedBy = \"cart\", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)\n\tprivate List<CartItem> cartItems = new ArrayList<>();\n\n\tprivate Double totalPrice = 0.0;\n}"
+      }
+  ]
+}
+]
+
