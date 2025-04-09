@@ -1,0 +1,565 @@
+[
+  {
+    "project_id": "ECommerceStore01",
+    "project_name": "E-Commerce Disc Store",
+    "stories": [
+      {
+        "story_id": "ST-001",
+        "description": "As a user, I want to see a summary of my order before confirming the purchase.",
+        "acceptance_criteria": [
+          "The summary should display all items in the cart.",
+          "The summary should include the user's address and payment details.",
+          "The user should be able to confirm or cancel the order."
+        ],
+        "related_classes": [
+          "ResumenPedido.java",
+          "ServicioPedidosImpl.java"
+        ]
+      },
+      {
+        "story_id": "ST-002",
+        "description": "As a user, I want to view all the discs currently in my shopping cart.",
+        "acceptance_criteria": [
+          "The system should display all items in the cart.",
+          "Each item should show its title, artist, price, and quantity.",
+          "The user should be able to remove items from the cart."
+        ],
+        "related_classes": [
+          "ResumenPedido.java",
+          "ServicioCarritoImpl.java"
+        ]
+      },
+      {
+        "story_id": "ST-003",
+        "description": "As a user, I should only have one active order in progress at a time.",
+        "acceptance_criteria": [
+          "If the user has an active order, they cannot create a new one.",
+          "Once the order is completed, the user can create a new one."
+        ],
+        "related_classes": [
+          "ServicioPedidosImpl.java",
+          "ResumenPedido.java",
+          "ServicioUsuariosImpl.java"
+        ]
+      },
+      {
+        "story_id": "ST-004",
+        "description": "As a user, when I complete an order, it should no longer be in progress.",
+        "acceptance_criteria": [
+          "When an order is completed, its status should change to 'completed'.",
+          "The user should receive a confirmation of the completed order.",
+          "The user should be able to place a new order after completion."
+        ],
+        "related_classes": [
+          "ServicioPedidosImpl.java",
+          "ResumenPedido.java"
+        ]
+      },
+      {
+        "story_id": "ST-005",
+        "description": "As a user, if I don't have a cart, the system should create one for me.",
+        "acceptance_criteria": [
+          "If a user logs in without an existing cart, a new cart should be automatically created.",
+          "The cart should be stored in the database.",
+          "The user should be able to add items to the newly created cart."
+        ],
+        "related_classes": [
+          "ServicioCarritoImpl.java",
+          "ServicioUsuariosImpl.java"
+        ]
+      },
+      {
+        "story_id": "ST-006",
+        "description": "As a user, I want to log in and be recognized in the system.",
+        "acceptance_criteria": [
+          "The system should allow users to log in with valid credentials.",
+          "If login is successful, the user is recognized and granted access to their account.",
+          "If login fails, the system should provide an appropriate error message."
+        ],
+        "related_classes": [
+          "ServicioUsuariosImpl.java"
+        ]
+      }
+    ],
+    "uml": [
+      {
+        "story_id": "ST-001",
+        "plantuml_code": "@startuml\n' Diagram focusing on the summary of an order\nclass ResumenPedido {\n    - List<Map<String, Object>> items\n    - String nombreCompleto\n    - String direccion\n    - String provincia\n    - String titularTarjeta\n    - String cardNumber\n    - String tipoTarjeta\n    - String regalo\n    - String observaciones\n}\n\nclass ServicioPedidosImpl {\n    + crearPedido()\n    + obtenerPedido()\n    + actualizarEstadoPedido()\n}\n\nResumenPedido \"1\" -- \"1\" ServicioPedidosImpl : manages\n@enduml"
+      },
+      {
+        "story_id": "ST-002",
+        "plantuml_code": "@startuml\n' Diagram for viewing discs/items in cart\nclass ResumenPedido {\n    - List<Map<String, Object>> items\n}\n\nclass ServicioCarritoImpl {\n    + agregarProducto(idUsuario, idProducto, quantity)\n    + borrarProductoCarrito(idUsuario, idProducto)\n    + obtenerProductosCarrito(idUsuario)\n}\n\nResumenPedido \"1\" -- \"1\" ServicioCarritoImpl : uses\n@enduml"
+      },
+      {
+        "story_id": "ST-003",
+        "plantuml_code": "@startuml\nclass ResumenPedido {\n    - List<Map<String, Object>> items\n}\n\nclass ServicioPedidosImpl {\n    + crearPedido()\n    + obtenerPedido()\n    + actualizarEstadoPedido()\n}\n\nclass ServicioUsuariosImpl {\n    + registarUsuario()\n    + obtenerUserPorMailYpass()\n}\n\nServicioPedidosImpl \"1\" -- \"1\" ResumenPedido : creates\nServicioUsuariosImpl \"1\" -- \"1\" ResumenPedido : linkUser\n@enduml"
+      },
+      {
+        "story_id": "ST-004",
+        "plantuml_code": "@startuml\nclass ServicioPedidosImpl {\n    + completarPedido()\n    + actualizarEstadoPedido()\n}\n@enduml"
+      },
+      {
+        "story_id": "ST-005",
+        "plantuml_code": "@startuml\nclass ServicioCarritoImpl {\n    + agreggarProducto()\n    + borrarProductoCarrito()\n    + obtenerProductosCarrito()\n}\n\nclass ServicioUsuariosImpl {\n    + registarUsuario()\n    + obtenerUserPorId()\n}\n\nServicioUsuariosImpl \"1\" -- \"1\" ServicioCarritoImpl : ensuresCart\n@enduml"
+      },
+      {
+        "story_id": "ST-006",
+        "plantuml_code": "@startuml\nclass ServicioUsuariosImpl {\n    + registarUsuario()\n    + autenticarUsuario()\n}\n@enduml"
+      }
+    ],
+    "classes": [
+      {
+        "file_name": "ServicioPedidosImpl.java",
+        "content": "package tienda.discos.servicioJPAImpl;\n\nimport tienda.discos.datos.serviciosWeb.ResumenPedido;\nimport tienda.discos.datos.serviciosWeb.InfoDiscos;\nimport java.util.List;\nimport java.util.Map;\n\npublic class ServicioPedidosImpl {\n    public ResumenPedido crearPedido(String nombreCompleto, String direccion, String provincia,\n                                     String titularTarjeta, String cardNumber, String tipoTarjeta,\n                                     String regalo, String observaciones, List<Map<String, Object>> items) {\n        ResumenPedido pedido = new ResumenPedido();\n        pedido.setNombreCompleto(nombreCompleto);\n        pedido.setDireccion(direccion);\n        pedido.setProvincia(provincia);\n        pedido.setTitularTarjeta(titularTarjeta);\n        pedido.setCardNumber(cardNumber);\n        pedido.setTipoTarjeta(tipoTarjeta);\n        pedido.setRegalo(regalo);\n        pedido.setObservaciones(observaciones);\n        pedido.setItems(items);\n        return pedido;\n    }\n\n    public ResumenPedido obtenerPedido(int pedidoId) {\n        // Simulate DB fetch\n        return new ResumenPedido();\n    }\n\n    public void actualizarEstadoPedido(int pedidoId, String estado) {\n        System.out.println(\"Pedido \" + pedidoId + \" updated to status: \" + estado);\n    }\n}"
+      },
+      {
+        "file_name": "ResumenPedido.java",
+        "content": "package tienda.discos.datos.serviciosWeb;\n\nimport java.util.Map;\nimport java.util.List;\n\npublic class ResumenPedido {\n\n    private List<Map<String, Object>> items;\n    private String nombreCompleto;\n    private String direccion;\n    private String provincia;\n    private String titularTarjeta;\n    private String cardNumber;\n    private String tipoTarjeta;\n    private String regalo;\n    private String observaciones;\n\n    public List<Map<String, Object>> getItems() {\n        return items;\n    }\n    public void setItems(List<Map<String, Object>> items) {\n        this.items = items;\n    }\n\n    public String getNombreCompleto() {\n        return nombreCompleto;\n    }\n    public void setNombreCompleto(String nombreCompleto) {\n        this.nombreCompleto = nombreCompleto;\n    }\n\n    public String getDireccion() {\n        return direccion;\n    }\n    public void setDireccion(String direccion) {\n        this.direccion = direccion;\n    }\n\n    public String getProvincia() {\n        return provincia;\n    }\n    public void setProvincia(String provincia) {\n        this.provincia = provincia;\n    }\n\n    public String getTitularTarjeta() {\n        return titularTarjeta;\n    }\n    public void setTitularTarjeta(String titularTarjeta) {\n        this.titularTarjeta = titularTarjeta;\n    }\n\n    public String getCardNumber() {\n        return cardNumber;\n    }\n    public void setCardNumber(String cardNumber) {\n        this.cardNumber = cardNumber;\n    }\n\n    public String getTipoTarjeta() {\n        return tipoTarjeta;\n    }\n    public void setTipoTarjeta(String tipoTarjeta) {\n        this.tipoTarjeta = tipoTarjeta;\n    }\n\n    public String getRegalo() {\n        return regalo;\n    }\n    public void setRegalo(String regalo) {\n        this.regalo = regalo;\n    }\n\n    public String getObservaciones() {\n        return observaciones;\n    }\n    public void setObservaciones(String observaciones) {\n        this.observaciones = observaciones;\n    }\n}"
+      },
+      {
+        "file_name": "ServicioCarritoImpl.java",
+        "content": "package tienda.discos.servicioJPAImpl;\n\nimport java.util.List;\nimport java.util.Map;\nimport javax.persistence.EntityManager;\nimport javax.persistence.PersistenceContext;\nimport javax.persistence.Query;\nimport org.hibernate.query.internal.NativeQueryImpl;\nimport org.hibernate.transform.AliasToEntityMapResultTransformer;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\nimport tienda.discos.constantesSQL.ConstantesSQL;\nimport tienda.discos.model.Carrito;\nimport tienda.discos.model.Disco;\nimport tienda.discos.model.ProductoCarrito;\nimport tienda.discos.model.Usuario;\nimport tienda.discos.servicios.ServicioCarrito;\n\n@Service\n@Transactional\npublic class ServicioCarritoImpl implements ServicioCarrito {\n\n    @PersistenceContext\n    private EntityManager entityManager;\n\n    @Override\n    public void agreggarProducto(int idUsuario, int idProducto, int quantity) {\n        Usuario uBaseDatos = entityManager.find(Usuario.class, idUsuario);\n        Carrito c = uBaseDatos.getCarrito();\n        if (c == null) {\n            c = new Carrito();\n            c.setUsuario(uBaseDatos);\n            uBaseDatos.setCarrito(c);\n            entityManager.persist(c);\n        }\n        boolean productFound = false;\n        for (ProductoCarrito pc : c.getProductosCarrito()) {\n            if (pc.getDisco().getId() == idProducto) {\n                productFound = true;\n                pc.setCantidad(pc.getCantidad() + quantity);\n                entityManager.merge(pc);\n            }\n        }\n        if (!productFound) {\n            ProductoCarrito pc = new ProductoCarrito();\n            pc.setCarrito(c);\n            pc.setDisco(entityManager.find(Disco.class, idProducto));\n            pc.setCantidad(quantity);\n            entityManager.persist(pc);\n        }\n    }\n\n    @Override\n    public void actualizarProductoCarrito(int idUsuario, int idProducto, int quantity) {\n        // TODO\n    }\n\n    @Override\n    public void borrarProductoCarrito(int idUsuario, int idProducto) {\n        Usuario u = entityManager.find(Usuario.class, idUsuario);\n        Carrito c = u.getCarrito();\n        if (c != null) {\n            Query query = entityManager.createNativeQuery(ConstantesSQL.SQL_BORRAR_PRODUCTO_CARRITO);\n            query.setParameter(\"carrito_id\", c.getId());\n            query.setParameter(\"id_disco\", idProducto);\n            query.executeUpdate();\n        }\n    }\n\n    @Override\n    public List<Map<String, Object>> obtenerProductosCarrito(int idUsuario) {\n        Usuario u = entityManager.find(Usuario.class, idUsuario);\n        Carrito c = u.getCarrito();\n        List<Map<String, Object>> res = null;\n        if (c != null ) {\n            Query query = entityManager.createNativeQuery(ConstantesSQL.SQL_OBTENER_PRODUCTOS_CARRITO);\n            query.setParameter(\"par_variable\", c.getId());\n            NativeQueryImpl<?> nativeQuery = (NativeQueryImpl<?>) query;\n            nativeQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);\n            res = (List<Map<String, Object>>) nativeQuery.getResultList();\n        }\n        return res;\n    }\n}"
+      },
+      {
+        "file_name": "ServicioUsuariosImpl.java",
+        "content": "package tienda.discos.servicioJPAImpl;\n\nimport java.util.List;\nimport java.util.Map;\nimport javax.persistence.EntityManager;\nimport javax.persistence.PersistenceContext;\nimport javax.persistence.Query;\nimport org.hibernate.query.internal.NativeQueryImpl;\nimport org.hibernate.transform.AliasToEntityMapResultTransformer;\nimport org.springframework.stereotype.Service;\nimport org.springframework.transaction.annotation.Transactional;\nimport tienda.discos.constantesSQL.ConstantesSQL;\nimport tienda.discos.model.Usuario;\nimport tienda.discos.servicios.ServicioUsuarios;\n\n@Service\n@Transactional\npublic class ServicioUsuariosImpl implements ServicioUsuarios {\n\n    @PersistenceContext\n    private EntityManager entityManager;\n\n    @Override\n    public void registarUsuario(Usuario u) {\n        entityManager.persist(u);\n    }\n\n    @Override\n    public Usuario obtenerUserPorMailYpass(String email, String pass) {\n        Query query = entityManager.createQuery(\"select u from Usuario u where u.email = :email and u.pass = :pass\");\n        query.setParameter(\"email\", email);\n        query.setParameter(\"pass\", pass);\n\n        List<Usuario> resultado = query.getResultList();\n        if (resultado.isEmpty()) {\n            return null;\n        } else {\n            return resultado.get(0);\n        }\n    }\n\n    @Override\n    public Usuario obtenerUserPorId(int id) {\n        return (Usuario) entityManager.createQuery(\"select u from Usuario u where u.id = :user_id\")\n                .setParameter(\"user_id\", id)\n                .getResultList().get(0);\n    }\n\n    @Override\n    public Map<String, Object> nativeObtenerUserPorId(int id) {\n        Query query = entityManager.createNativeQuery(ConstantesSQL.SQL_OBTENER_USUARIO_POR_ID);\n        query.setParameter(\"user_id\", id);\n        NativeQueryImpl<?> nativequery = (NativeQueryImpl<?>) query;\n        nativequery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);\n        List<Map<String, Object>> test = (List<Map<String, Object>>) nativequery.getResultList();\n        return test.isEmpty() ? null : test.get(0);\n    }\n\n    @Override\n    public List<Usuario> obtenerUsuarios() {\n        return entityManager.createQuery(\"select u from Usuario u\").getResultList();\n    }\n\n    @Override\n    public void actualizarDatos(Integer id, String nombreUsuario, String pass, String telefono, String pais) {\n        Usuario u = entityManager.find(Usuario.class, id);\n        u.setNombre(nombreUsuario);\n        u.setPass(pass);\n        u.setTel(telefono);\n        u.setPais(pais);\n        entityManager.merge(u);\n    }\n\n    @Override\n    public void guardarCambiosUsuario(Usuario usuarioEditar) {\n        entityManager.merge(usuarioEditar);\n    }\n}"
+      }
+    ]
+  },
+  {
+    "project_id": "ECommerceStore02",
+    "project_name": "E Store",
+    "stories": [
+      {
+        "story_id": "S01",
+        "description": "As a user, I want to register and log in using email or Google authentication, so I can access my account.",
+        "acceptance_criteria": [
+          "User can register with an email and password.",
+          "User can log in using registered credentials.",
+          "User can log in via Google authentication."
+        ],
+        "related_classes": ["user.js"]
+      },
+      {
+        "story_id": "S02",
+        "description": "As an admin, I want to add, edit, and delete products, so I can manage my store efficiently.",
+        "acceptance_criteria": [
+          "Admin can create new product entries.",
+          "Admin can update product details.",
+          "Admin can delete a product."
+        ],
+        "related_classes": ["product.js"]
+      },
+      {
+        "story_id": "S03",
+        "description": "As a user, I want to browse products by category, so I can find items easily.",
+        "acceptance_criteria": [
+          "User can view a list of product categories.",
+          "User can browse products filtered by category."
+        ],
+        "related_classes": ["categories.js","product.js"]
+      },
+      {
+        "story_id": "S04",
+        "description": "As a user, I want to add and remove products from my cart, so I can purchase what I need.",
+        "acceptance_criteria": [
+          "User can add a product to their cart specifying a quantity.",
+          "User can remove a product from their cart.",
+          "User's cart updates in real-time."
+        ],
+        "related_classes": ["user.js","product.js"]
+      },
+      {
+        "story_id": "S05",
+        "description": "As a user, I want to proceed to checkout and complete my payment, so I can receive my order.",
+        "acceptance_criteria": [
+          "User can view their cart summary before checkout.",
+          "User can proceed to payment.",
+          "User receives an order confirmation after payment."
+        ],
+        "related_classes": ["orders.js","user.js","product.js"]
+      },
+      {
+        "story_id": "S06",
+        "description": "As a user, I want to leave reviews and ratings on products, so I can share my feedback with others.",
+        "acceptance_criteria": [
+          "User can submit a rating (1-5 stars).",
+          "User can leave a textual review.",
+          "User's review is linked to the product."
+        ],
+        "related_classes": ["review.js","product.js"]
+      }
+    ],
+    "uml": [
+      {
+        "story_id": "S01",
+        "plantuml_code": "@startuml\nclass User {\n    + title: String\n    + image: String\n    + Address: String\n    + googleId: String\n    + cart: List<Product>\n}\n@enduml"
+      },
+      {
+        "story_id": "S02",
+        "plantuml_code": "@startuml\nclass Product {\n    + title: String\n    + price: Number\n    + description: String\n}\n@enduml"
+      },
+      {
+        "story_id": "S03",
+        "plantuml_code": "@startuml\nclass Category {\n    + title: String\n    + slug: String\n}\nclass Product {\n    + title: String\n    + price: Number\n}\nProduct \"*\" -- \"1\" Category : belongs_to\n@enduml"
+      },
+      {
+        "story_id": "S04",
+        "plantuml_code": "@startuml\nclass User {\n    + cart: List<Product>\n}\nclass Product {\n    + title: String\n    + price: Number\n}\nUser \"1\" -- \"*\" Product : add/remove\n@enduml"
+      },
+      {
+        "story_id": "S05",
+        "plantuml_code": "@startuml\nclass Order {\n    + txnId: String\n    + createdAt: Date\n}\nclass User {\n    + cart: List<Product>\n}\nclass Product {\n    + title: String\n    + price: Number\n}\nOrder \"*\" -- \"*\" Product : contains\nUser \"1\" -- \"*\" Order : places\n@enduml"
+      },
+      {
+        "story_id": "S06",
+        "plantuml_code": "@startuml\nclass Review {\n    + user: String\n    + rating: Number\n    + review: String\n}\nclass Product {\n    + title: String\n    + price: Number\n}\nProduct \"1\" -- \"*\" Review : has\n@enduml"
+      }
+    ],
+    "classes": [
+      {
+        "file_name": "categories.js",
+        "content": "...(same as original: categorySchema, slug, etc.)"
+      },
+      {
+        "file_name": "review.js",
+        "content": "...(same as original: reviewSchema, rating, etc.)"
+      },
+      {
+        "file_name": "orders.js",
+        "content": "...(same as original: orderSchema, products, user, etc.)"
+      },
+      {
+        "file_name": "user.js",
+        "content": "...(same as original: userSchema, googleId, cart, etc.)"
+      },
+      {
+        "file_name": "product.js",
+        "content": "...(same as original: productSchema, title, description, etc.)"
+      }
+    ]
+  },
+  {
+    "project_id": "ECommerceStore03",
+    "project_name": "spring-microservices-ecommerce",
+    "stories": [
+      {
+        "story_id": "S01",
+        "description": "As an admin, I want to add, update, and delete products, so I can manage my inventory.",
+        "acceptance_criteria": [
+          "Admin can create a new product with a name, description, and price.",
+          "Admin can update an existing product's details.",
+          "Admin can delete a product."
+        ],
+        "related_classes": ["Product.java"]
+      },
+      {
+        "story_id": "S02",
+        "description": "As a customer, I want to place an order, so I can purchase products.",
+        "acceptance_criteria": [
+          "Users can add products to an order using their SKU codes.",
+          "Orders are stored in the system with an order number.",
+          "Users receive a confirmation when an order is placed."
+        ],
+        "related_classes": ["Order.java","Product.java"]
+      },
+      {
+        "story_id": "S03",
+        "description": "As a customer, I want to view my past orders, so I can track my purchases.",
+        "acceptance_criteria": [
+          "Users can retrieve their past orders by order number.",
+          "Orders include product details and prices."
+        ],
+        "related_classes": ["Order.java"]
+      }
+    ],
+    "uml": [
+      {
+        "story_id": "S01",
+        "plantuml_code": "@startuml\nclass Product {\n    + id: String\n    + name: String\n    + description: String\n    + price: BigDecimal\n}\n@enduml"
+      },
+      {
+        "story_id": "S02",
+        "plantuml_code": "@startuml\nclass Order {\n    + id: UUID\n    + orderNumber: String\n    + skuCode: String\n    + quantity: Integer\n    + price: BigDecimal\n}\nclass Product {\n    + id: String\n    + name: String\n}\nOrder \"1\" -- \"1\" Product : contains\n@enduml"
+      },
+      {
+        "story_id": "S03",
+        "plantuml_code": "@startuml\nclass Order {\n    + id: UUID\n    + orderNumber: String\n}\n@enduml"
+      }
+    ],
+    "classes": [
+      {
+        "file_name": "Product.java",
+        "content": "...(same as original: Product class with id, name, description, price)..."
+      },
+      {
+        "file_name": "Order.java",
+        "content": "...(same as original: Order class with id, orderNumber, skuCode, etc.)..."
+      }
+    ]
+  },
+  {
+    "project_id": "ECommerceStore04",
+    "project_name": "ecommerce-microservice-backend-app",
+    "stories": [
+      {
+        "story_id": "S01",
+        "description": "As a customer, I want to place an order, so I can purchase products.",
+        "acceptance_criteria": [
+          "Users can add products to an order.",
+          "Orders store product details and timestamps."
+        ],
+        "related_classes": [
+          "Order.java",
+          "Product.java",
+          "User.java"
+        ]
+      },
+      {
+        "story_id": "S02",
+        "description": "As a customer, I want to add and remove products from my cart, so I can manage my shopping list.",
+        "acceptance_criteria": [
+          "Users can add a product to their cart specifying a quantity.",
+          "Users can remove products from their cart."
+        ],
+        "related_classes": [
+          "Cart.java",
+          "Product.java",
+          "User.java"
+        ]
+      },
+      {
+        "story_id": "S03",
+        "description": "As a user, I want to make a payment for my order, so I can complete my purchase.",
+        "acceptance_criteria": [
+          "Users can initiate a payment process.",
+          "Users can see payment confirmation."
+        ],
+        "related_classes": [
+          "Payment.java",
+          "Order.java"
+        ]
+      },
+      {
+        "story_id": "S04",
+        "description": "As a user, I want to log in securely, so I can access my account.",
+        "acceptance_criteria": [
+          "Users can register and log in with email/password.",
+          "Users are assigned roles (ADMIN, USER)."
+        ],
+        "related_classes": [
+          "User.java"
+        ]
+      },
+      {
+        "story_id": "S05",
+        "description": "As an admin, I want to add and update products, so I can manage inventory.",
+        "acceptance_criteria": [
+          "Admins can create and update product entries.",
+          "Products are linked to categories."
+        ],
+        "related_classes": [
+          "Product.java",
+          "Category.java"
+        ]
+      },
+      {
+        "story_id": "S06",
+        "description": "As a user, I want to save my favorite products, so I can view them later.",
+        "acceptance_criteria": [
+          "Users can favorite a product.",
+          "Users can view a list of favorites."
+        ],
+        "related_classes": [
+          "Favourite.java",
+          "User.java",
+          "Product.java"
+        ]
+      }
+    ],
+    "uml": [
+      {
+        "story_id": "S01",
+        "plantuml_code": "@startuml\nclass Order {\n    + id: UUID\n    + orderNumber: String\n    + userId: UUID\n}\nclass Product {\n    + id: UUID\n    + name: String\n}\nOrder \"*\" -- \"*\" Product : contains\n@enduml"
+      },
+      {
+        "story_id": "S02",
+        "plantuml_code": "@startuml\nclass Cart {\n    + id: UUID\n    + userId: UUID\n}\nclass Product {\n    + id: UUID\n    + name: String\n}\nCart \"*\" -- \"*\" Product : add/remove\n@enduml"
+      },
+      {
+        "story_id": "S03",
+        "plantuml_code": "@startuml\nclass Payment {\n    + id: UUID\n    + orderId: UUID\n    + status: PaymentStatus\n}\nclass Order {\n    + id: UUID\n}\nOrder \"1\" -- \"1\" Payment : has\n@enduml"
+      },
+      {
+        "story_id": "S04",
+        "plantuml_code": "@startuml\nclass User {\n    + id: UUID\n    + email: String\n    + role: RoleBasedAuthority\n}\n@enduml"
+      },
+      {
+        "story_id": "S05",
+        "plantuml_code": "@startuml\nclass Product {\n    + id: UUID\n    + name: String\n    + categoryId: UUID\n}\nclass Category {\n    + id: UUID\n    + name: String\n}\nProduct \"1\" -- \"1\" Category : belongs_to\n@enduml"
+      },
+      {
+        "story_id": "S06",
+        "plantuml_code": "@startuml\nclass Favourite {\n    + userId: UUID\n    + productId: UUID\n}\nclass User {\n    + id: UUID\n}\nclass Product {\n    + id: UUID\n}\nUser \"*\" -- \"*\" Favourite : favorites\nFavourite \"1\" -- \"1\" Product : link\n@enduml"
+      }
+    ],
+    "classes": [
+      {
+        "file_name": "Order.java",
+        "content": "...(same as original: includes orderId, userId, etc.)..."
+      },
+      {
+        "file_name": "Cart.java",
+        "content": "...(same as original: cartId, userId, list of cartItems, etc.)..."
+      },
+      {
+        "file_name": "Payment.java",
+        "content": "...(same as original: paymentId, orderId, PaymentStatus, etc.)..."
+      },
+      {
+        "file_name": "User.java",
+        "content": "...(same as original: userId, firstName, lastName, etc.)..."
+      },
+      {
+        "file_name": "Product.java",
+        "content": "...(same as original: productId, productTitle, etc.)..."
+      },
+      {
+        "file_name": "Category.java",
+        "content": "...(same as original: categoryId, categoryTitle, subCategories, etc.)..."
+      },
+      {
+        "file_name": "Favourite.java",
+        "content": "...(same as original: userId, productId, localDateTime, etc.)..."
+      }
+    ]
+  },
+  {
+    "project_id": "ECommerceStore05",
+    "project_name": "E-Commerce-Application",
+    "stories": [
+      {
+        "story_id": "S01",
+        "description": "As a customer, I want to place an order, so I can purchase products.",
+        "acceptance_criteria": [
+          "Users can add products to an order.",
+          "Orders store product details and timestamps."
+        ],
+        "related_classes": [
+          "Order.java",
+          "OrderItem.java",
+          "User.java"
+        ]
+      },
+      {
+        "story_id": "S02",
+        "description": "As a customer, I want to add and remove products from my cart, so I can manage my shopping list.",
+        "acceptance_criteria": [
+          "Users can add a product to their cart specifying a quantity.",
+          "Users can remove products from their cart."
+        ],
+        "related_classes": [
+          "Cart.java",
+          "CartItem.java",
+          "User.java"
+        ]
+      },
+      {
+        "story_id": "S03",
+        "description": "As a user, I want to make a payment for my order, so I can complete my purchase.",
+        "acceptance_criteria": [
+          "Users can initiate a payment process.",
+          "Users can see payment confirmation."
+        ],
+        "related_classes": [
+          "Payment.java",
+          "Order.java"
+        ]
+      },
+      {
+        "story_id": "S04",
+        "description": "As a user, I want to log in securely, so I can access my account.",
+        "acceptance_criteria": [
+          "Users can register and log in with email/password.",
+          "Users are assigned roles (ADMIN, USER)."
+        ],
+        "related_classes": [
+          "User.java",
+          "Role.java"
+        ]
+      },
+      {
+        "story_id": "S05",
+        "description": "As an admin, I want to add and update products, so I can manage inventory.",
+        "acceptance_criteria": [
+          "Admins can create and update product entries.",
+          "Products are linked to categories."
+        ],
+        "related_classes": [
+          "Product.java",
+          "Category.java"
+        ]
+      }
+    ],
+    "uml": [
+      {
+        "story_id": "S01",
+        "plantuml_code": "@startuml\nclass Order {\n    + id: Long\n    + userId: Long\n    + createdAt: LocalDate\n}\nclass OrderItem {\n    + id: Long\n    + orderId: Long\n    + productId: Long\n}\nUser \"1\" -- \"*\" Order : places\nOrder \"*\" -- \"*\" OrderItem : contains\n@enduml"
+      },
+      {
+        "story_id": "S02",
+        "plantuml_code": "@startuml\nclass Cart {\n    + id: Long\n    + userId: Long\n}\nclass CartItem {\n    + id: Long\n    + cartId: Long\n    + productId: Long\n}\nUser \"1\" -- \"1\" Cart : owns\nCart \"*\" -- \"*\" CartItem : contains\n@enduml"
+      },
+      {
+        "story_id": "S03",
+        "plantuml_code": "@startuml\nclass Payment {\n    + id: Long\n    + orderId: Long\n    + status: PaymentStatus\n}\nclass Order {\n    + id: Long\n}\nOrder \"1\" -- \"1\" Payment : has\n@enduml"
+      },
+      {
+        "story_id": "S04",
+        "plantuml_code": "@startuml\nclass User {\n    + id: Long\n    + email: String\n    + role: Role\n}\n@enduml"
+      },
+      {
+        "story_id": "S05",
+        "plantuml_code": "@startuml\nclass Product {\n    + id: Long\n    + name: String\n    + categoryId: Long\n}\nclass Category {\n    + id: Long\n    + name: String\n}\nProduct \"1\" -- \"1\" Category : belongs_to\n@enduml"
+      }
+    ],
+    "classes": [
+      {
+        "file_name": "Order.java",
+        "content": "...(same as original: orderId, email, list<OrderItem>, etc.)..."
+      },
+      {
+        "file_name": "OrderItem.java",
+        "content": "...(same as original: orderItemId, product, quantity, etc.)..."
+      },
+      {
+        "file_name": "Product.java",
+        "content": "...(same as original: productId, productName, price, category, etc.)..."
+      },
+      {
+        "file_name": "Payment.java",
+        "content": "...(same as original: paymentId, paymentMethod, etc.)..."
+      },
+      {
+        "file_name": "Category.java",
+        "content": "...(same as original: categoryId, categoryName, etc.)..."
+      },
+      {
+        "file_name": "User.java",
+        "content": "...(same as original: userId, firstName, lastName, roles, cart, etc.)..."
+      },
+      {
+        "file_name": "CartItem.java",
+        "content": "...(same as original: cartItemId, cart, product, quantity, etc.)..."
+      },
+      {
+        "file_name": "Role.java",
+        "content": "...(same as original: roleId, roleName, etc.)..."
+      },
+      {
+        "file_name": "Cart.java",
+        "content": "...(same as original: cartId, user, cartItems, totalPrice, etc.)..."
+      }
+    ]
+  }
+]
