@@ -116,10 +116,27 @@ The API will be available at:
 
 ### Method 1: Standalone Docker Compose (Recommended)
 
-Use the included `docker-compose.backend.yml` for easy deployment:
+#### For External Drive Users (Kingston, USB drives, etc.)
+
+If you're working from an external drive, use the no-volumes configuration to avoid permission issues:
 
 ```bash
-# From the Backend directory
+# From the Backend directory - Use this for external drives
+docker-compose -f docker-compose.no-volumes.yml up --build
+
+# Run in background
+docker-compose -f docker-compose.no-volumes.yml up --build -d
+
+# Stop the service
+docker-compose -f docker-compose.no-volumes.yml down
+```
+
+#### For Internal Drive Users (Full Features)
+
+Use the full configuration with volume persistence:
+
+```bash
+# From the Backend directory - Use this for internal drives
 docker-compose -f docker-compose.backend.yml up --build
 
 # Run in background
@@ -233,14 +250,16 @@ The API supports multiple LLM providers. At least one API key is required:
 
 ### Setup and Configuration Files
 
-| File                         | Purpose                        | Usage                                             |
-| ---------------------------- | ------------------------------ | ------------------------------------------------- |
-| `setup_local.py`             | Automated development setup    | `python setup_local.py`                           |
-| `.env`                       | Environment variables          | Created by setup script or manually               |
-| `env_template.txt`           | Environment variables template | Reference for required variables                  |
-| `docker-compose.backend.yml` | Standalone Docker service      | `docker-compose -f docker-compose.backend.yml up` |
-| `dockerfile`                 | Docker image configuration     | `docker build -t backend-api .`                   |
-| `requirements.txt`           | Python dependencies            | `pip install -r requirements.txt`                 |
+| File                            | Purpose                         | Usage                                                |
+| ------------------------------- | ------------------------------- | ---------------------------------------------------- |
+| `setup_local.py`                | Automated development setup     | `python setup_local.py`                              |
+| `.env`                          | Environment variables           | Created by setup script or manually                  |
+| `env_template.txt`              | Environment variables template  | Reference for required variables                     |
+| `docker-compose.backend.yml`    | Docker service (with volumes)   | `docker-compose -f docker-compose.backend.yml up`    |
+| `docker-compose.no-volumes.yml` | Docker service (external drive) | `docker-compose -f docker-compose.no-volumes.yml up` |
+| `dockerfile`                    | Docker image configuration      | `docker build -t backend-api .`                      |
+| `requirements.txt`              | Python dependencies             | `pip install -r requirements.txt`                    |
+| `DOCKER_TROUBLESHOOTING.md`     | Docker issue solutions          | Reference guide for Docker problems                  |
 
 ### Quick Setup Options
 
@@ -298,7 +317,15 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
    - Solution: Ensure all dependencies are installed: `pip install -r requirements.txt`
 
 4. **CORS Issues**
+
    - Solution: Update `FRONTEND_URL` in `.env` to match your frontend URL
+
+5. **External Drive Volume Mount Issues (macOS)**
+   ```
+   Error: mkdir /host_mnt/Volumes/KINGSTON: operation not permitted
+   ```
+   - **Quick Solution**: Use `docker-compose -f docker-compose.no-volumes.yml up --build`
+   - **Full Guide**: See `DOCKER_TROUBLESHOOTING.md` for comprehensive solutions
 
 ### Development Tips
 

@@ -8,6 +8,7 @@ import { WorkflowStepper } from './WorkflowStepper';
 import { LoadingSpinner } from './LoadingSpinner';
 import { ErrorMessage } from './ErrorMessage';
 import toast from 'react-hot-toast';
+import { apiClient } from '../lib/api';
 import { 
   Play, 
   Download, 
@@ -89,8 +90,7 @@ export const EnhancedCodeGenerator: React.FC = () => {
 
   const loadAvailableLLMs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/v2/llm-providers');
-      const data = await response.json();
+      const data = await apiClient.get('/api/v2/llm-providers');
       
       const providers: LLMProvider[] = Object.entries(data.available_providers).map(([id, name]) => ({
         id,
@@ -142,23 +142,11 @@ export const EnhancedCodeGenerator: React.FC = () => {
       // Start domain analysis
       updateWorkflowStep('domain', 'running');
       
-      const response = await fetch('http://localhost:8000/api/v2/complete-workflow', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_story: userStory,
-          llm_provider: selectedLLM,
-          include_java_code: true,
-        }),
+      const result: CompleteWorkflowResponse = await apiClient.post('/api/v2/complete-workflow', {
+        user_story: userStory,
+        llm_provider: selectedLLM,
+        include_java_code: true,
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result: CompleteWorkflowResponse = await response.json();
 
       // Update domain analysis
       updateWorkflowStep('domain', 'completed');
@@ -202,7 +190,7 @@ export const EnhancedCodeGenerator: React.FC = () => {
 
   const downloadProject = () => {
     if (downloadUrl) {
-      window.open(`http://localhost:8000${downloadUrl}`, '_blank');
+      window.open(apiClient.getDownloadUrl(downloadUrl), '_blank');
       toast.success('¡Descarga iniciada!');
     }
   };

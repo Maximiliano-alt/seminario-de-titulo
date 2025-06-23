@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CodeViewer } from './CodeViewer';
 import { UMLDiagramEditor } from './UMLDiagramEditor';
 import { ErrorMessage } from './ErrorMessage';
+import { API_BASE_URL } from '../lib/api';
 
 interface ClassInfo {
   name: string;
@@ -36,7 +37,7 @@ export const CodeGenerator: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/generate', {
+      const response = await fetch(API_BASE_URL + '/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

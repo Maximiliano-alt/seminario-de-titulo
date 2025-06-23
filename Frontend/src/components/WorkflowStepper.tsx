@@ -15,7 +15,7 @@ interface WorkflowStepperProps {
 
 export const WorkflowStepper: React.FC<WorkflowStepperProps> = ({
   steps,
-  currentStep,
+  currentStep: _currentStep,
   processingTime,
 }) => {
   return (

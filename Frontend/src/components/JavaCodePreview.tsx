@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Copy, Package, FileCode, Layers } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { apiClient } from '../lib/api';
 
 interface JavaCodePreviewProps {
   javaClasses: Record<string, string>;
@@ -52,7 +53,7 @@ export const JavaCodePreview: React.FC<JavaCodePreviewProps> = ({
 
   const downloadProject = () => {
     if (downloadUrl) {
-      window.open(`http://localhost:8000${downloadUrl}`, '_blank');
+      window.open(apiClient.getDownloadUrl(downloadUrl), '_blank');
       toast.success('¡Descarga iniciada!');
     } else {
       toast.error('URL de descarga no disponible');
@@ -60,71 +61,11 @@ export const JavaCodePreview: React.FC<JavaCodePreviewProps> = ({
   };
 
   const createClientSideZip = async () => {
-    try {
-      // Import JSZip dynamically for client-side ZIP creation
-      const JSZip = (await import('jszip')).default;
-      const zip = new JSZip();
-
-      // Add all Java files to the zip
-      Object.entries(javaClasses).forEach(([fileName, code]) => {
-        // Determine the package structure for the file
-        const packagePath = Object.entries(projectStructure).find(([pkg, classes]) => 
-          classes.some(className => `${className}.java` === fileName)
-        );
-        
-        if (packagePath) {
-          const [packageName] = packagePath;
-          const folderPath = packageName.replace(/\./g, '/');
-          zip.file(`src/main/java/${folderPath}/${fileName}`, code);
-        } else {
-          zip.file(`src/main/java/${fileName}`, code);
-        }
-      });
-
-      // Add pom.xml or build.gradle if available
-      const pomContent = `<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <groupId>com.generated</groupId>
-    <artifactId>generated-project</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-    
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
-    <dependencies>
-        ${dependencies.map(dep => `<!-- ${dep} -->`).join('\n        ')}
-    </dependencies>
-</project>`;
-
-      zip.file('pom.xml', pomContent);
-
-      // Generate and download the ZIP
-      const content = await zip.generateAsync({ type: 'blob' });
-      const url = window.URL.createObjectURL(content);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'proyecto-java-generado.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-      
-      toast.success('¡Archivo ZIP descargado exitosamente!');
-    } catch (err) {
-      console.error('Failed to create ZIP:', err);
-      toast.error('Error al crear archivo ZIP. Use la descarga del servidor.');
-      // Fallback to server download
-      if (downloadUrl) {
-        downloadProject();
-      }
+    // Fallback to server download for now
+    if (downloadUrl) {
+      downloadProject();
+    } else {
+      toast.error('Funcionalidad de descarga no disponible. Use la descarga del servidor.');
     }
   };
 
