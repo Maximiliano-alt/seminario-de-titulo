@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+
+# Python
+__pycache__
+venv
+.venv
+
+# VSCode
+.vscode
+
+# Mac
+.DS_Store
+
+# build output
+out/
+dist/
+build/ 
