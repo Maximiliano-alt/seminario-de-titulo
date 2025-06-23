@@ -1,0 +1,36 @@
+# Core web framework
+fastapi
+uvicorn
+python-dotenv
+protobuf==3.20.3
+
+# LangChain providers (will install core dependencies)
+langchain-openai
+langchain-anthropic>=0.3.15
+langchain-google-genai
+langchain-community
+langchain-core>=0.3.59,<1.0.0
+
+# Vector store and embeddings
+sentence-transformers
+faiss-cpu
+chromadb
+
+# UML Generation
+plantuml
+plantuml-markdown
+
+# Other utilities
+python-multipart
+unstructured
+pypdf
+langchain-text-splitters
+langchainhub
+bs4
+datasets
+accelerate
+autopep8
+
+# Additional dependencies to resolve conflicts
+requests-mock
+fuzzytm 

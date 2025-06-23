@@ -1,0 +1,2 @@
+Backend/vector_store/*.sqlite3 filter=lfs diff=lfs merge=lfs -text
+Backend/vector_store/*.bin filter=lfs diff=lfs merge=lfs -text
