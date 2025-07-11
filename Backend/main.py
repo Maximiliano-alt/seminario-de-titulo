@@ -40,8 +40,13 @@ frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 allowed_origins = [
     "http://localhost:3000", 
     "http://localhost:5173",
-    frontend_url
+    frontend_url,
+    "https://story-umlify.netlify.app"  # Explicitly add your Netlify URL
 ]
+
+# Log CORS configuration for debugging
+logger.info(f"FRONTEND_URL from environment: {frontend_url}")
+logger.info(f"Allowed CORS origins: {allowed_origins}")
 
 app.add_middleware(
     CORSMiddleware,
