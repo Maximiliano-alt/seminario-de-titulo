@@ -52,7 +52,7 @@ router = APIRouter()
 class LLMManager:
     def __init__(self):
         self.providers = self._initialize_providers()
-        self.llm_instances = {}
+        # Removed llm_instances cache to prevent concurrency issues
     
     def _initialize_providers(self) -> Dict[str, Dict[str, Any]]:
         """Initialize LLM providers based on available API keys."""
@@ -110,15 +110,17 @@ class LLMManager:
         return providers
     
     def get_llm_instance(self, provider_id: str):
-        """Get or create LLM instance for the specified provider."""
-        if provider_id in self.llm_instances:
-            return self.llm_instances[provider_id]
+        """Create a NEW LLM instance for each request to avoid concurrency issues."""
+        # NO LONGER using cached instances - create a new one for each request
+        # This prevents blocking when multiple users use the same model
         
         provider_info = self.providers.get(provider_id)
         if not provider_info or not provider_info["available"]:
             raise ValueError(f"LLM provider {provider_id} is not available")
         
         try:
+            logger.debug(f"Creating new LLM instance for {provider_id}")
+            
             if provider_info["provider"] == "openai":
                 if not OPENAI_AVAILABLE or ChatOpenAI is None:
                     raise ValueError("OpenAI provider not available due to import failure")
@@ -153,7 +155,8 @@ class LLMManager:
             else:
                 raise ValueError(f"Unknown provider: {provider_info['provider']}")
             
-            self.llm_instances[provider_id] = llm
+            # DO NOT cache the instance - return a fresh one
+            logger.debug(f"Successfully created new LLM instance for {provider_id}")
             return llm
             
         except Exception as e:
@@ -184,6 +187,8 @@ class LLMManager:
         return provider_info.get("reason", "Provider is not available for an unknown reason.")
 
 # Initialize LLM manager
+# Note: LLMManager creates new instances per request to avoid concurrency issues
+# This ensures multiple users can use the same model simultaneously
 llm_manager = LLMManager()
 
 # Initialize vector store and load dataset
@@ -278,23 +283,49 @@ logger.info("Multi-LLM manager initialized successfully")
 # New Multi-LLM Endpoints
 @router.get("/llm-providers")
 async def get_llm_providers():
-    """Get available LLM providers and their status"""
+    """Get available LLM providers and their status
+    This endpoint is stateless and thread-safe for concurrent access"""
     try:
+        # Log the request for debugging
+        logger.debug("LLM providers endpoint called")
+        
         available_providers = {}
+        unavailable_providers = {}
+        
         for provider_id, provider_info in llm_manager.providers.items():
             if llm_manager.is_provider_available(provider_id):
                 available_providers[provider_id] = provider_info['name']
+            else:
+                unavailable_providers[provider_id] = {
+                    "name": provider_info['name'],
+                    "reason": provider_info.get('reason', 'Unknown')
+                }
         
-        return {
+        response = {
             "available_providers": available_providers,
+            "unavailable_providers": unavailable_providers,
             "available_count": len(available_providers),
             "total_count": len(llm_manager.providers),
-            "default_provider": "gemini-2.0-flash-exp",  # Changed from gpt-4o to avoid quota issues
-            "status": "success"
+            "default_provider": "gemini-2.0-flash-exp",
+            "status": "success",
+            "message": "Providers list retrieved successfully. Multiple users can use the same model simultaneously."
         }
+        
+        logger.debug(f"Returning {len(available_providers)} available providers")
+        return response
+        
     except Exception as e:
         logger.error(f"Error getting LLM providers: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        # Return a degraded response instead of failing completely
+        return {
+            "available_providers": {},
+            "unavailable_providers": {},
+            "available_count": 0,
+            "total_count": 0,
+            "default_provider": "gemini-2.0-flash-exp",
+            "status": "error",
+            "message": f"Error retrieving providers: {str(e)}"
+        }
 
 # Enhanced request models for multi-LLM support
 class EnhancedUserStoryRequest(BaseModel):
