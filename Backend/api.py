@@ -58,16 +58,15 @@ class LLMManager:
         """Initialize LLM providers based on available API keys."""
         providers = {}
         
-        # Check OpenAI
+        # Check OpenAI - Only keep GPT-4o Mini
         openai_key = os.getenv("OPENAI_API_KEY")
         if OPENAI_AVAILABLE and openai_key and openai_key.strip() and openai_key != "your_openai_api_key_here":
-            providers["gpt-4o"] = {"name": "GPT-4o (OpenAI)", "available": True, "provider": "openai", "model": "gpt-4o"}
+            # Remove GPT-4o and GPT-3.5, only keep GPT-4o Mini
             providers["gpt-4o-mini"] = {"name": "GPT-4o Mini (OpenAI)", "available": True, "provider": "openai", "model": "gpt-4o-mini"}
-            providers["gpt-3.5-turbo"] = {"name": "GPT-3.5 Turbo (OpenAI)", "available": True, "provider": "openai", "model": "gpt-3.5-turbo"}
             logger.info("OpenAI providers initialized successfully")
         else:
             reason = "OpenAI libraries not installed." if not OPENAI_AVAILABLE else "OPENAI_API_KEY not found in .env file."
-            providers["gpt-4o"] = {"name": "GPT-4o (OpenAI)", "available": False, "provider": "openai", "model": "gpt-4o", "reason": reason}
+            providers["gpt-4o-mini"] = {"name": "GPT-4o Mini (OpenAI)", "available": False, "provider": "openai", "model": "gpt-4o-mini", "reason": reason}
         
         # Check Anthropic
         anthropic_key = os.getenv("ANTHROPIC_API_KEY")
@@ -200,19 +199,15 @@ try:
     # Try to load existing vector store first
     try:
         loaded = vector_store.load_vector_store(collection_name="ecommerce_examples")
+        if loaded:
+            logger.info("Successfully loaded pre-built vector store with RAG examples")
+        else:
+            logger.warning("Vector store not found, will proceed without RAG context")
+            vector_store = None
     except Exception as load_error:
         logger.warning(f"Failed to load existing vector store: {load_error}")
-        loaded = False
-    
-    if not loaded:
-        # Create embeddings from dataset if loading failed
-        try:
-            logger.info(f"Loading dataset from: {dataset_path}")
-            vector_store.create_embeddings_from_dataset(dataset_path)
-        except Exception as dataset_error:
-            logger.warning(f"Failed to load dataset: {dataset_error}")
-            # Create a minimal vector store for basic functionality
-            vector_store = None
+        # Don't try to create from dataset, just proceed without vector store
+        vector_store = None
         
     logger.info("Vector store initialized successfully")
     

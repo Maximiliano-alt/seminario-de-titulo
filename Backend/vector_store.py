@@ -83,7 +83,8 @@ class VectorStore:
             if os.path.exists(os.path.join(self.persist_directory, "index.faiss")):
                 self.vector_store = FAISS.load_local(
                     self.persist_directory,
-                    self.embeddings
+                    self.embeddings,
+                    allow_dangerous_deserialization=True
                 )
                 return True
         else:
