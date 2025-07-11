@@ -20,4 +20,4 @@ COPY . .
 RUN mkdir -p static/uml static/java
 
 # Start the application
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"] 
+CMD ["python", "startup.py"] 
