@@ -1,0 +1,32 @@
+# Requirements optimized for Railway deployment with FULL functionality
+# Includes RAG, embeddings, and all LLM features
+
+# Core web framework
+fastapi
+uvicorn[standard]
+python-dotenv
+python-multipart
+
+# LangChain with full functionality
+langchain-core
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langchain-community
+langchain-huggingface
+
+# Vector store and embeddings - FULL FUNCTIONALITY
+sentence-transformers
+faiss-cpu
+chromadb
+
+# UML Generation
+plantuml
+
+# Additional utilities for full functionality
+requests
+pydantic
+langchain-text-splitters
+
+# Optional but recommended for production
+protobuf 
