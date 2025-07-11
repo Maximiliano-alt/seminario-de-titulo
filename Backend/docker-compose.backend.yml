@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - PORT=8000
+      - FRONTEND_URL=http://localhost:3000
+      # Add your API keys here or use an .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - USE_FAISS=true
+      - LOG_LEVEL=INFO
+    # Comment out volume mounts if you encounter permission issues on external drives
+    # volumes:
+    #   # Persist vector store data (optional - comment out if permission issues)
+    #   - ./vector_store:/app/vector_store
+    #   # Persist static files (optional - comment out if permission issues)
+    #   - ./static:/app/static
+    env_file:
+      - .env # Optional: Load environment variables from .env file
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+# Optional: Uncomment if you want to use named volumes instead of bind mounts
+# volumes:
+#   vector_store_data:
+#   static_files_data:

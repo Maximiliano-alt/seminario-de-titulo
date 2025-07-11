@@ -1,0 +1,35 @@
+# Core web framework - essential
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-dotenv==1.0.0
+python-multipart==0.0.6
+
+# LangChain core - minimal setup for basic functionality
+langchain-core>=0.3.59,<1.0.0
+langchain-openai==0.2.12
+langchain-anthropic>=0.3.15
+langchain-google-genai==2.0.8
+
+# Only include essential dependencies for basic API functionality
+requests==2.31.0
+pydantic==2.5.0
+
+# UML Generation - lightweight
+plantuml==0.3.0
+
+# Optional - only install if USE_EMBEDDINGS=true
+# sentence-transformers==2.2.2
+# faiss-cpu==1.7.4
+# langchain-huggingface==0.1.0
+# langchain-community==0.3.29
+
+# Comment out heavy dependencies for production:
+# chromadb - uses too much memory
+# accelerate - not needed for basic functionality 
+# datasets - heavy dependency
+# unstructured - heavy dependency
+# pypdf - only needed for PDF processing
+# langchain-text-splitters - included in core
+# langchainhub - not essential
+# bs4 - only for web scraping
+# autopep8 - development only 

@@ -1,0 +1,17 @@
+# Copy this file to .env and fill in your actual API keys
+
+# LLM API Keys - Add your actual keys here
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
+# Vector Store Configuration
+USE_FAISS=true
+
+# Production Settings
+ENVIRONMENT=production
+PORT=8000
+
+# Frontend URL (update with your Netlify URL)
+FRONTEND_URL=https://your-app-name.netlify.app 
