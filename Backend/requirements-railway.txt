@@ -8,9 +8,9 @@ python-dotenv
 python-multipart
 
 # LangChain with full functionality
-langchain-core
+langchain-core>=0.3.59,<1.0.0
 langchain-openai
-langchain-anthropic
+langchain-anthropic>=0.3.15
 langchain-google-genai
 langchain-community
 langchain-huggingface
@@ -20,13 +20,24 @@ sentence-transformers
 faiss-cpu
 chromadb
 
-# UML Generation
+# UML Generation - COMPLETE
 plantuml
+plantuml-markdown
+
+# Document processing - CRITICAL
+unstructured
+pypdf
 
 # Additional utilities for full functionality
 requests
 pydantic
 langchain-text-splitters
+langchainhub
+bs4
+datasets
+accelerate
 
-# Optional but recommended for production
-protobuf 
+# Production optimizations
+protobuf==3.20.3
+requests-mock
+fuzzytm
