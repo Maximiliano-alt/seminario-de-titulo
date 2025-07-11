@@ -1,0 +1,11 @@
+# Only ignore specific files/folders, not Backend
+.git
+.vscode
+node_modules
+**/venv
+**/__pycache__
+.DS_Store
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local 
